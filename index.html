@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exposici&oacute;n 2 - Traducci&oacute;n Dirigida por la Sintaxis</title>
+  <title>Compiladores - Traducci&oacute;n Dirigida por la Sintaxis</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -18,14 +18,21 @@
   <main class="deck">
     <section class="slide cover" id="slide-1">
       <div class="slide-shell">
-        <div class="hero-mark">05</div>
+        <div class="hero-mark">COMP</div>
         <div class="hero-copy">
-          <p class="eyebrow">Exposici&oacute;n 2</p>
+          <p class="eyebrow">Materia: Compiladores</p>
           <h2>Traducci&oacute;n Dirigida<br>por la Sintaxis</h2>
           <p class="lead">
             Del reconocimiento sint&aacute;ctico al c&aacute;lculo de atributos, construcci&oacute;n de AST
             y traducci&oacute;n durante el parsing.
           </p>
+          <div class="presenter-box">
+            <p class="label">Integrantes</p>
+            <div class="presenter-list">
+              <span>Enzo Erico</span>
+              <span>Elias Roman</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -33,8 +40,12 @@
     <section class="slide outline" id="slide-2">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Ruta de la exposici&oacute;n</p>
-          <h2>El mismo recorrido del material del a&ntilde;o pasado</h2>
+          <p class="eyebrow">Organizaci&oacute;n del cap&iacute;tulo</p>
+          <h2>C&oacute;mo vamos a desarrollar el cap&iacute;tulo 5</h2>
+          <p class="outline-intro">
+            El contenido avanza desde la idea de una DDS hasta su implementaci&oacute;n
+            en analizadores descendentes y ascendentes, y cierra con evaluadores y uso de memoria.
+          </p>
         </div>
         <div class="grid two">
           <article class="card">
@@ -92,10 +103,18 @@
           <article class="card emphasis">
             <h3>Definici&oacute;n</h3>
             <p>
-              Cada s&iacute;mbolo gramatical tiene atributos asociados y cada producci&oacute;n agrega reglas
-              sem&aacute;nticas para calcularlos.
+              Una definici&oacute;n dirigida por la sintaxis es una generalizaci&oacute;n de una
+              gram&aacute;tica independiente del contexto en la que cada s&iacute;mbolo gramatical
+              tiene un conjunto de atributos asociado, dividido en atributos
+              <strong>sintetizados</strong> y <strong>heredados</strong>.
             </p>
-            <p class="keyline">Insight: una DDS convierte el &aacute;rbol sint&aacute;ctico en un mecanismo de c&aacute;lculo.</p>
+            <p class="keyline">Idea central: una DDS convierte el &aacute;rbol sint&aacute;ctico en un mecanismo de c&aacute;lculo.</p>
+            <ol class="clean-list">
+              <li>Un atributo puede representar una cadena, un n&uacute;mero, un tipo, una direcci&oacute;n o una posici&oacute;n de memoria.</li>
+              <li>El valor de un atributo en un nodo del &aacute;rbol de an&aacute;lisis se define mediante una regla sem&aacute;ntica asociada a la producci&oacute;n usada en ese nodo.</li>
+              <li>El valor de un atributo sintetizado se calcula a partir de los atributos de los hijos del nodo.</li>
+              <li>El valor de un atributo heredado se calcula a partir de atributos del padre o de hermanos del nodo.</li>
+            </ol>
           </article>
           <article class="code-card">
             <p class="label">De estructura a significado</p>
@@ -105,22 +124,19 @@ E.val := E1.val + T.val</code></pre>
             <p>
               La producci&oacute;n sola reconoce una expresi&oacute;n. La regla sem&aacute;ntica adem&aacute;s calcula su valor.
             </p>
+            <p>
+              En consecuencia, la gram&aacute;tica deja de ser solo un mecanismo de reconocimiento
+              y pasa a describir c&oacute;mo se obtiene informaci&oacute;n sem&aacute;ntica a partir de la estructura sint&aacute;ctica.
+            </p>
           </article>
         </div>
-        <div class="grid three mini">
-          <article class="mini-card">
-            <h3>Qu&eacute; aportan</h3>
-            <p>Permiten evaluar, verificar tipos, construir AST o generar c&oacute;digo intermedio.</p>
-          </article>
-          <article class="mini-card">
-            <h3>Qu&eacute; no hace sola la gram&aacute;tica</h3>
-            <p>No puede guardar contexto ni calcular resultados solo con las producciones.</p>
-          </article>
-          <article class="mini-card">
-            <h3>Lectura para exponer</h3>
-            <p>Primero se reconoce la forma; despu&eacute;s se usa esa forma para producir informaci&oacute;n &uacute;til.</p>
-          </article>
-        </div>
+        <article class="band">
+          <h3>Alcance de una DDS</h3>
+          <p>
+            Las DDS permiten calcular valores, verificar tipos, construir &aacute;rboles sint&aacute;cticos,
+            generar representaciones intermedias y preparar la traducci&oacute;n posterior del programa.
+          </p>
+        </article>
       </div>
     </section>
 
@@ -135,15 +151,25 @@ E.val := E1.val + T.val</code></pre>
             <h3>Esquema general</h3>
             <pre><code>b := f(c1, c2, ..., ck)</code></pre>
             <p><strong>b</strong> es el atributo que queremos calcular y <strong>c1...ck</strong> son los atributos de los que depende.</p>
+            <ol class="clean-list">
+              <li>Las reglas sem&aacute;nticas establecen dependencias entre atributos.</li>
+              <li>Esas dependencias se representan mediante un <strong>grafo de dependencias</strong>.</li>
+              <li>Del grafo se obtiene un <strong>orden de evaluaci&oacute;n</strong> para las reglas sem&aacute;nticas.</li>
+            </ol>
           </article>
           <article class="card">
-            <h3>Lectura correcta</h3>
+            <h3>Interpretaci&oacute;n</h3>
             <p>No es una asignaci&oacute;n cualquiera: es una restricci&oacute;n de orden.</p>
             <p>Si <code>E.val</code> depende de <code>E1.val</code> y <code>T.val</code>, esos valores deben existir antes.</p>
+            <ol class="clean-list">
+              <li>La evaluaci&oacute;n de las reglas sem&aacute;nticas define los valores de los atributos en los nodos del &aacute;rbol.</li>
+              <li>Un &aacute;rbol que muestra esos valores se denomina <strong>&aacute;rbol de an&aacute;lisis con anotaciones</strong>.</li>
+              <li>El proceso de calcular esos valores se conoce como <strong>anotar</strong> o <strong>decorar</strong> el &aacute;rbol.</li>
+            </ol>
           </article>
         </div>
         <article class="band">
-          <h3>Idea fuerza para la exposici&oacute;n</h3>
+          <h3>Consecuencia</h3>
           <p>
             Detr&aacute;s de cada regla hay un grafo de dependencias impl&iacute;cito. El orden de evaluaci&oacute;n no se elige
             libremente; queda impuesto por esas dependencias.
@@ -164,14 +190,14 @@ E.val := E1.val + T.val</code></pre>
             <p>Se calculan a partir de los hijos. El flujo normal es <strong>de abajo hacia arriba</strong>.</p>
             <pre><code>T.val := digito.valex
 E.val := E1.val + T.val</code></pre>
-            <p class="callout">Lectura oral: primero resuelvo las partes chicas, luego compongo el resultado global.</p>
+            <p class="callout">Conclusi&oacute;n: primero se resuelven las partes elementales y despu&eacute;s se compone el resultado global.</p>
           </article>
           <article class="card">
             <h3>Atributos heredados</h3>
             <p>Se calculan usando el padre o los hermanos de la izquierda. Llevan <strong>contexto</strong>.</p>
             <pre><code>D -&gt; T L
 L.her := T.tipo</code></pre>
-            <p class="callout">Lectura oral: el tipo no nace en la lista; se le transmite desde la declaraci&oacute;n.</p>
+            <p class="callout">Conclusi&oacute;n: el tipo no nace en la lista; se transmite desde la declaraci&oacute;n donde se introduce el contexto.</p>
           </article>
         </div>
       </div>
@@ -239,7 +265,7 @@ L.her := T.tipo</code></pre>
           <article class="card">
             <h3>Por qu&eacute; importa</h3>
             <p>Permite separar el an&aacute;lisis sint&aacute;ctico de etapas posteriores como chequeo de tipos, optimizaci&oacute;n o generaci&oacute;n de c&oacute;digo.</p>
-            <p class="keyline">Idea fuerza: el AST es el puente entre reconocer y compilar.</p>
+            <p class="keyline">Conclusi&oacute;n: el AST es el puente entre reconocer y compilar.</p>
           </article>
         </div>
       </div>
@@ -259,7 +285,7 @@ hazhoja(valor)</code></pre>
             <p>Con estas funciones, una DDS puede ir armando sub&aacute;rboles mientras reconoce la entrada.</p>
           </article>
           <article class="card">
-            <h3>Ejemplo oral: <code>a - 4 + c</code></h3>
+            <h3>Ejemplo: <code>a - 4 + c</code></h3>
             <p>Se crean primero las hojas <code>a</code>, <code>4</code> y <code>c</code>; despu&eacute;s los nodos de <code>-</code> y <code>+</code>.</p>
             <pre><code>      +
      / \
@@ -310,7 +336,7 @@ resultado al tope</code></pre>
           </article>
         </div>
         <article class="band">
-          <h3>Frase corta para exponer</h3>
+          <h3>Conclusi&oacute;n operativa</h3>
           <p>En un LR, la regla sem&aacute;ntica vive en <strong>reduce</strong>: la estructura y el valor se consolidan al mismo tiempo.</p>
         </article>
       </div>
@@ -466,7 +492,7 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
           </article>
         </div>
         <article class="band warning">
-          <h3>Frase corta para defender</h3>
+          <h3>Conclusi&oacute;n t&eacute;cnica</h3>
           <p>Los sintetizados son naturales en LR; los heredados requieren ingenier&iacute;a extra para recrear el contexto que a&uacute;n no est&aacute; armado.</p>
         </article>
       </div>
@@ -542,12 +568,12 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
     <section class="slide closing" id="slide-25">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Cierre</p>
-          <h2>Resumen para exponer con seguridad</h2>
+          <p class="eyebrow">Resumen</p>
+          <h2>S&iacute;ntesis del cap&iacute;tulo</h2>
         </div>
         <div class="grid two">
           <article class="card emphasis">
-            <h3>Mapa mental final</h3>
+            <h3>Ideas principales</h3>
             <ol class="clean-list">
               <li>DDS = gram&aacute;tica + sem&aacute;ntica.</li>
               <li>Sintetizados = flujo natural de abajo hacia arriba.</li>
@@ -573,7 +599,7 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">Bibliograf&iacute;a</p>
-          <h2>Fuentes utilizadas para preparar la exposici&oacute;n</h2>
+          <h2>Fuentes bibliogr&aacute;ficas</h2>
         </div>
         <div class="grid two">
           <article class="card emphasis">
@@ -587,7 +613,7 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
           <article class="card">
             <h3>Material de apoyo</h3>
             <p><strong>20250403 - Traducci&oacute;n dirigida por la Sintaxis - DC-GG.pdf</strong>.</p>
-            <p>Resumen utilizado como apoyo para organizar y simplificar la explicaci&oacute;n oral.</p>
+            <p>Material de apoyo utilizado para complementar la organizaci&oacute;n y el desarrollo del contenido.</p>
           </article>
         </div>
       </div>

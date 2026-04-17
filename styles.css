@@ -149,15 +149,58 @@ code {
 
 .cover .slide-shell {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 280px 1fr;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
 }
 
 .hero-copy h2,
 .divider-shell h2 {
   font-size: clamp(2.4rem, 5.4vw, 4.5rem);
   max-width: 10ch;
+}
+
+.cover .hero-mark {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  padding: 24px;
+  border-radius: 28px;
+  border: 1px solid rgba(247, 251, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(247, 251, 255, 0.16), rgba(247, 251, 255, 0.06));
+  font-size: clamp(3rem, 7vw, 5rem);
+  letter-spacing: 0.08em;
+}
+
+.presenter-box {
+  margin-top: 26px;
+  padding: 18px 20px;
+  max-width: 420px;
+  border-radius: 22px;
+  border: 1px solid rgba(247, 251, 255, 0.18);
+  background: rgba(247, 251, 255, 0.08);
+}
+
+.presenter-box .label {
+  color: rgba(247, 251, 255, 0.72);
+}
+
+.presenter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.presenter-list span {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: rgba(247, 251, 255, 0.9);
+  color: var(--accent-deep);
 }
 
 .lead {
@@ -192,6 +235,17 @@ code {
 .section-heading h2 {
   font-size: clamp(1.9rem, 3.6vw, 3rem);
   max-width: 18ch;
+}
+
+.outline .section-heading h2 {
+  max-width: 12ch;
+}
+
+.outline-intro {
+  max-width: 62ch;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 1.02rem;
 }
 
 .grid {
@@ -311,6 +365,7 @@ code {
 
 .outline .card {
   min-height: 170px;
+  border-top: 4px solid rgba(31, 95, 191, 0.28);
 }
 
 .closing .card {
@@ -338,6 +393,10 @@ code {
   .hero-mark,
   .big-number {
     font-size: clamp(4rem, 24vw, 6rem);
+  }
+
+  .cover .hero-mark {
+    min-height: auto;
   }
 }
 
