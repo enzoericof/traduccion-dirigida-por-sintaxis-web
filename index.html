@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exposici&oacute;n 2 - Traducci&oacute;n Dirigida por la Sintaxis</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Compiladores - Cap&iacute;tulo 5</p>
+      <h1>Traducci&oacute;n Dirigida por la Sintaxis</h1>
+    </div>
+    <p class="topbar-note">Presentaci&oacute;n web en formato de diapositivas</p>
+  </header>
+
+  <main class="deck">
+    <section class="slide cover" id="slide-1">
+      <div class="slide-shell">
+        <div class="hero-mark">05</div>
+        <div class="hero-copy">
+          <p class="eyebrow">Exposici&oacute;n 2</p>
+          <h2>Traducci&oacute;n Dirigida<br>por la Sintaxis</h2>
+          <p class="lead">
+            Del reconocimiento sint&aacute;ctico al c&aacute;lculo de atributos, construcci&oacute;n de AST
+            y traducci&oacute;n durante el parsing.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide outline" id="slide-2">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ruta de la exposici&oacute;n</p>
+          <h2>El mismo recorrido del material del a&ntilde;o pasado</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <span class="step">01</span>
+            <h3>Definiciones dirigidas por la sintaxis</h3>
+            <p>Qu&eacute; agrega una DDS a una gram&aacute;tica y c&oacute;mo se expresan sus reglas sem&aacute;nticas.</p>
+          </article>
+          <article class="card">
+            <span class="step">02</span>
+            <h3>Construcci&oacute;n de &aacute;rboles sint&aacute;cticos</h3>
+            <p>C&oacute;mo la sem&aacute;ntica nos deja construir representaciones &uacute;tiles mientras analizamos.</p>
+          </article>
+          <article class="card">
+            <span class="step">03</span>
+            <h3>Evaluaci&oacute;n ascendente de sintetizados</h3>
+            <p>La pila LR como soporte natural para calcular atributos en cada reducci&oacute;n.</p>
+          </article>
+          <article class="card">
+            <span class="step">04</span>
+            <h3>Atributos por la izquierda</h3>
+            <p>C&oacute;mo circula el contexto cuando la informaci&oacute;n va del padre o de hermanos previos.</p>
+          </article>
+          <article class="card">
+            <span class="step">05</span>
+            <h3>Traducci&oacute;n descendente</h3>
+            <p>Eliminaci&oacute;n de recursi&oacute;n por la izquierda y dise&ntilde;o de un traductor predictivo.</p>
+          </article>
+          <article class="card">
+            <span class="step">06-08</span>
+            <h3>Heredados en LR, evaluadores y espacio</h3>
+            <p>Marcadores, recorridos recursivos y memoria para atributos en tiempo de compilaci&oacute;n.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-3">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">01</p>
+        <div>
+          <p class="eyebrow">Bloque 1</p>
+          <h2>Definiciones dirigidas por la sintaxis</h2>
+          <p class="lead">La gram&aacute;tica deja de solo reconocer y pasa a producir significado.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-4">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Concepto base</p>
+          <h2>Una DDS es gram&aacute;tica + atributos + reglas sem&aacute;nticas</h2>
+        </div>
+        <div class="grid two">
+          <article class="card emphasis">
+            <h3>Definici&oacute;n</h3>
+            <p>
+              Cada s&iacute;mbolo gramatical tiene atributos asociados y cada producci&oacute;n agrega reglas
+              sem&aacute;nticas para calcularlos.
+            </p>
+            <p class="keyline">Insight: una DDS convierte el &aacute;rbol sint&aacute;ctico en un mecanismo de c&aacute;lculo.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">De estructura a significado</p>
+            <pre><code>E -&gt; E + T
+
+E.val := E1.val + T.val</code></pre>
+            <p>
+              La producci&oacute;n sola reconoce una expresi&oacute;n. La regla sem&aacute;ntica adem&aacute;s calcula su valor.
+            </p>
+          </article>
+        </div>
+        <div class="grid three mini">
+          <article class="mini-card">
+            <h3>Qu&eacute; aportan</h3>
+            <p>Permiten evaluar, verificar tipos, construir AST o generar c&oacute;digo intermedio.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Qu&eacute; no hace sola la gram&aacute;tica</h3>
+            <p>No puede guardar contexto ni calcular resultados solo con las producciones.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Lectura para exponer</h3>
+            <p>Primero se reconoce la forma; despu&eacute;s se usa esa forma para producir informaci&oacute;n &uacute;til.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-5">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Forma de una DDS</p>
+          <h2>Las reglas sem&aacute;nticas definen dependencias entre atributos</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Esquema general</h3>
+            <pre><code>b := f(c1, c2, ..., ck)</code></pre>
+            <p><strong>b</strong> es el atributo que queremos calcular y <strong>c1...ck</strong> son los atributos de los que depende.</p>
+          </article>
+          <article class="card">
+            <h3>Lectura correcta</h3>
+            <p>No es una asignaci&oacute;n cualquiera: es una restricci&oacute;n de orden.</p>
+            <p>Si <code>E.val</code> depende de <code>E1.val</code> y <code>T.val</code>, esos valores deben existir antes.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Idea fuerza para la exposici&oacute;n</h3>
+          <p>
+            Detr&aacute;s de cada regla hay un grafo de dependencias impl&iacute;cito. El orden de evaluaci&oacute;n no se elige
+            libremente; queda impuesto por esas dependencias.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-6">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Atributos</p>
+          <h2>Sintetizados y heredados: dos direcciones de flujo</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Atributos sintetizados</h3>
+            <p>Se calculan a partir de los hijos. El flujo normal es <strong>de abajo hacia arriba</strong>.</p>
+            <pre><code>T.val := digito.valex
+E.val := E1.val + T.val</code></pre>
+            <p class="callout">Lectura oral: primero resuelvo las partes chicas, luego compongo el resultado global.</p>
+          </article>
+          <article class="card">
+            <h3>Atributos heredados</h3>
+            <p>Se calculan usando el padre o los hermanos de la izquierda. Llevan <strong>contexto</strong>.</p>
+            <pre><code>D -&gt; T L
+L.her := T.tipo</code></pre>
+            <p class="callout">Lectura oral: el tipo no nace en la lista; se le transmite desde la declaraci&oacute;n.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-7">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Dependencias y evaluaci&oacute;n</p>
+          <h2>Del grafo de dependencias al orden topol&oacute;gico</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Grafo de dependencias</h3>
+            <p>Cada nodo representa un atributo y cada arista indica que un valor depende de otro.</p>
+            <div class="diagram">
+              <span>T.tipo</span>
+              <span class="arrow">&rarr;</span>
+              <span>L.her</span>
+              <span class="arrow">&rarr;</span>
+              <span>id.tipo</span>
+            </div>
+            <p>Si hay ciclo, la evaluaci&oacute;n no puede completarse.</p>
+          </article>
+          <article class="card">
+            <h3>Orden de evaluaci&oacute;n</h3>
+            <p>Se usa un orden topol&oacute;gico: primero los nodos sin dependencias pendientes y despu&eacute;s los dem&aacute;s.</p>
+            <ol class="clean-list">
+              <li>Hojas y atributos disponibles.</li>
+              <li>Nodos intermedios.</li>
+              <li>Raiz o resultado final.</li>
+            </ol>
+          </article>
+        </div>
+        <article class="band warning">
+          <h3>Error cl&aacute;sico</h3>
+          <p>Si A depende de B y B depende de A, la DDS introduce una dependencia circular y no hay forma correcta de evaluarla.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-8">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">02</p>
+        <div>
+          <p class="eyebrow">Bloque 2</p>
+          <h2>Construcci&oacute;n de &aacute;rboles sint&aacute;cticos</h2>
+          <p class="lead">La traducci&oacute;n orientada por la sintaxis tambi&eacute;n puede construir estructuras.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-9">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">AST</p>
+          <h2>El parser no solo valida: tambi&eacute;n puede producir el &aacute;rbol &uacute;til</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>&Aacute;rbol sint&aacute;ctico abstracto</h3>
+            <p>Es una forma condensada del &aacute;rbol de an&aacute;lisis. Elimina ruido y conserva la estructura relevante.</p>
+            <p>Los operadores y palabras clave suelen quedar en nodos internos, no como hojas separadas.</p>
+          </article>
+          <article class="card">
+            <h3>Por qu&eacute; importa</h3>
+            <p>Permite separar el an&aacute;lisis sint&aacute;ctico de etapas posteriores como chequeo de tipos, optimizaci&oacute;n o generaci&oacute;n de c&oacute;digo.</p>
+            <p class="keyline">Idea fuerza: el AST es el puente entre reconocer y compilar.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-10">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ejemplo de construcci&oacute;n</p>
+          <h2>Funciones t&iacute;picas para expresiones</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Primitivas del libro</p>
+            <pre><code>haznodo(op, izquierda, derecha)
+hazhoja(valor)</code></pre>
+            <p>Con estas funciones, una DDS puede ir armando sub&aacute;rboles mientras reconoce la entrada.</p>
+          </article>
+          <article class="card">
+            <h3>Ejemplo oral: <code>a - 4 + c</code></h3>
+            <p>Se crean primero las hojas <code>a</code>, <code>4</code> y <code>c</code>; despu&eacute;s los nodos de <code>-</code> y <code>+</code>.</p>
+            <pre><code>      +
+     / \
+    -   c
+   / \
+  a   4</code></pre>
+          </article>
+        </div>
+        <article class="band">
+          <h3>C&oacute;mo explicarlo en clase</h3>
+          <p>El parser va reconociendo la gram&aacute;tica, pero las acciones sem&aacute;nticas van devolviendo punteros a nodos. As&iacute; el AST nace junto con el an&aacute;lisis.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-11">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">03</p>
+        <div>
+          <p class="eyebrow">Bloque 3</p>
+          <h2>Evaluaci&oacute;n ascendente de atributos sintetizados</h2>
+          <p class="lead">El caso mas natural para un parser LR.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-12">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Parsing LR</p>
+          <h2>Los sintetizados se calculan justo en la reducci&oacute;n</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Intuicion</h3>
+            <p>Un analizador ascendente ya guarda sub&aacute;rboles parciales en la pila. Eso encaja perfecto con atributos sintetizados.</p>
+            <p>Cuando la producci&oacute;n se reduce, los valores de los hijos ya est&aacute;n disponibles.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Imagen mental</p>
+            <pre><code>Entrada: 3 5 +
+
+push 3
+push 5
+reduce -> 3 + 5
+resultado al tope</code></pre>
+            <p>La sem&aacute;ntica se ejecuta en el mismo instante en que se reconoce la producci&oacute;n.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Frase corta para exponer</h3>
+          <p>En un LR, la regla sem&aacute;ntica vive en <strong>reduce</strong>: la estructura y el valor se consolidan al mismo tiempo.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-13">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">04</p>
+        <div>
+          <p class="eyebrow">Bloque 4</p>
+          <h2>Definiciones con atributos por la izquierda</h2>
+          <p class="lead">La informaci&oacute;n heredada puede fluir, pero con restricciones claras.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-14">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">L-atribuidas</p>
+          <h2>El contexto solo puede venir del padre o de hermanos a la izquierda</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Permitido</h3>
+            <ol class="clean-list">
+              <li>Depender de atributos del no terminal del lado izquierdo.</li>
+              <li>Depender de hermanos que ya aparecieron antes en la producci&oacute;n.</li>
+              <li>Combinar eso con atributos sintetizados.</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>No permitido</h3>
+            <ol class="clean-list">
+              <li>Mirar hacia un s&iacute;mbolo que est&aacute; a la derecha y a&uacute;n no fue procesado.</li>
+              <li>Introducir dependencias circulares.</li>
+            </ol>
+            <p class="keyline">Por eso estas definiciones se pueden evaluar en una pasada de izquierda a derecha.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-15">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Esquemas de traducci&oacute;n</p>
+          <h2>Acciones sem&aacute;nticas incrustadas dentro de la gram&aacute;tica</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Idea central</p>
+            <pre><code>E -&gt; E + T { print("+") }</code></pre>
+            <p>Las acciones pueden imprimir, construir nodos, verificar tipos o emitir c&oacute;digo.</p>
+          </article>
+          <article class="card">
+            <h3>Restricci&oacute;n fundamental</h3>
+            <p>Una acci&oacute;n no puede usar un atributo que a&uacute;n no existe.</p>
+            <p>Por eso las acciones se colocan en posiciones donde sus dependencias ya fueron satisfechas.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Puente con el bloque siguiente</h3>
+          <p>Las definiciones por la izquierda son las que vuelven practicable este esquema durante el an&aacute;lisis.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-16">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">05</p>
+        <div>
+          <p class="eyebrow">Bloque 5</p>
+          <h2>Traducci&oacute;n descendente</h2>
+          <p class="lead">C&oacute;mo adaptar la sem&aacute;ntica a parsers predictivos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">LL y recursi&oacute;n</p>
+          <h2>Eliminar recursi&oacute;n por la izquierda para poder traducir en descenso</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Problema</h3>
+            <p>Muchas gram&aacute;ticas de expresiones son naturalmente recursivas por la izquierda, pero un parser predictivo no puede manejarlas directamente.</p>
+          </article>
+          <article class="card">
+            <h3>Soluci&oacute;n</h3>
+            <p>Se transforma la gram&aacute;tica y tambi&eacute;n el esquema de traducci&oacute;n para conservar el mismo resultado sem&aacute;ntico.</p>
+            <p class="keyline">No solo cambia la forma sint&aacute;ctica; hay que preservar el orden correcto de las acciones.</p>
+          </article>
+        </div>
+        <div class="code-row">
+          <pre><code>E  -&gt; T R
+R  -&gt; + T R | - T R | epsilon</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-18">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Traductor predictivo</p>
+          <h2>En descenso recursivo, los heredados encajan de forma natural</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Idea de implementaci&oacute;n</h3>
+            <p>Cada no terminal se vuelve una funci&oacute;n. Sus par&aacute;metros representan atributos heredados y su retorno representa atributos sintetizados.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Esqueleto mental</p>
+            <pre><code>E() {
+  T();
+  R(h);
+}</code></pre>
+            <p>La traducci&oacute;n se va haciendo mientras se recorre el &aacute;rbol de arriba hacia abajo.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-19">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">06</p>
+        <div>
+          <p class="eyebrow">Bloque 6</p>
+          <h2>Evaluaci&oacute;n ascendente de atributos heredados</h2>
+          <p class="lead">El caso dif&iacute;cil: LR no ve tan f&aacute;cilmente el contexto del padre.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Heredados en LR</p>
+          <h2>La soluci&oacute;n cl&aacute;sica es usar marcadores y aprovechar la pila</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Problema</h3>
+            <p>En an&aacute;lisis ascendente, cuando se necesita un heredado, todav&iacute;a puede no existir el nodo padre de forma expl&iacute;cita.</p>
+          </article>
+          <article class="card">
+            <h3>Soluci&oacute;n</h3>
+            <p>Se insertan no terminales marcadores que producen <code>epsilon</code> y disparan acciones en el momento adecuado.</p>
+            <p>As&iacute; se simula el paso de informaci&oacute;n heredada sin romper el an&aacute;lisis LR.</p>
+          </article>
+        </div>
+        <article class="band warning">
+          <h3>Frase corta para defender</h3>
+          <p>Los sintetizados son naturales en LR; los heredados requieren ingenier&iacute;a extra para recrear el contexto que a&uacute;n no est&aacute; armado.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-21">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">07</p>
+        <div>
+          <p class="eyebrow">Bloque 7</p>
+          <h2>Evaluadores recursivos</h2>
+          <p class="lead">Si el &aacute;rbol ya existe, se puede recorrer en el orden que convenga.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-22">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Recorridos</p>
+          <h2>Funciones recursivas para evaluar atributos sobre un &aacute;rbol construido</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Ventaja</h3>
+            <p>Ya no dependemos del orden estricto del parser. Podemos recorrer hijos en el orden que pida el grafo de dependencias.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Esquema conceptual</p>
+            <pre><code>A(nodo, heredado) {
+  evaluar hijo izquierdo;
+  evaluar hijo derecho;
+  devolver sintetizado;
+}</code></pre>
+            <p>Sirve para DDS que no son c&oacute;modas de implantar directamente durante el an&aacute;lisis.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide section-divider" id="slide-23">
+      <div class="slide-shell divider-shell">
+        <p class="big-number">08</p>
+        <div>
+          <p class="eyebrow">Bloque 8</p>
+          <h2>Consideraciones de espacio</h2>
+          <p class="lead">Los atributos tambi&eacute;n cuestan memoria, no solo tiempo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Memoria</p>
+          <h2>Los valores viven solo mientras alguien los necesita</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Duraci&oacute;n de un atributo</h3>
+            <p>Empieza cuando se calcula y termina cuando ya fueron evaluados todos los valores que dependen de &eacute;l.</p>
+            <p>Con el grafo de dependencias se puede estimar cu&aacute;ntos registros o espacios temporales hacen falta.</p>
+          </article>
+          <article class="card">
+            <h3>Optimizaci&oacute;n</h3>
+            <p>Las reglas de copia <code>b := c</code> permiten reutilizar registros y evitar copias innecesarias.</p>
+            <p class="keyline">El compilador no guarda todo para siempre; recicla espacio en cuanto la dependencia termina.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide closing" id="slide-25">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Cierre</p>
+          <h2>Resumen para exponer con seguridad</h2>
+        </div>
+        <div class="grid two">
+          <article class="card emphasis">
+            <h3>Mapa mental final</h3>
+            <ol class="clean-list">
+              <li>DDS = gram&aacute;tica + sem&aacute;ntica.</li>
+              <li>Sintetizados = flujo natural de abajo hacia arriba.</li>
+              <li>Heredados = contexto desde padre o izquierda.</li>
+              <li>Grafos = orden correcto de evaluaci&oacute;n.</li>
+              <li>AST = representaci&oacute;n &uacute;til para las siguientes fases.</li>
+              <li>LL favorece heredados; LR favorece sintetizados.</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>Idea de conclusi&oacute;n</h3>
+            <p>
+              El cap&iacute;tulo 5 muestra c&oacute;mo pasar del &aacute;rbol sint&aacute;ctico a resultados reales:
+              valores, estructuras, tipos o c&oacute;digo. En otras palabras, ense&ntilde;a c&oacute;mo un parser
+              deja de solo aceptar cadenas y empieza a traducir programas.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-26">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Bibliograf&iacute;a</p>
+          <h2>Fuentes utilizadas para preparar la exposici&oacute;n</h2>
+        </div>
+        <div class="grid two">
+          <article class="card emphasis">
+            <h3>Libro base</h3>
+            <p>
+              Aho, Alfred V.; Lam, Monica S.; Sethi, Ravi; Ullman, Jeffrey D.
+              <strong>Compiladores: Principios, t&eacute;cnicas y herramientas</strong>.
+            </p>
+            <p>Cap&iacute;tulo 5: Traducci&oacute;n orientada por la sintaxis.</p>
+          </article>
+          <article class="card">
+            <h3>Material de apoyo</h3>
+            <p><strong>20250403 - Traducci&oacute;n dirigida por la Sintaxis - DC-GG.pdf</strong>.</p>
+            <p>Resumen utilizado como apoyo para organizar y simplificar la explicaci&oacute;n oral.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
