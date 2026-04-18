@@ -247,6 +247,57 @@ L.her := T.tipo</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-7a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Grafos de dependencias</p>
+          <h2>Procedimiento para construir el grafo</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Pasos</h3>
+            <ol class="clean-list">
+              <li>Se reescribe cada regla sem&aacute;ntica como <code>b := f(c1, ..., ck)</code>.</li>
+              <li>Se crea un nodo por cada atributo que aparece en el &aacute;rbol.</li>
+              <li>Se agregan aristas desde cada atributo <code>ci</code> hacia <code>b</code>.</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>Llamadas de procedimiento</h3>
+            <p>
+              Si una regla sem&aacute;ntica solo invoca un procedimiento, se introduce un falso atributo
+              sintetizado para poder representarla tambi&eacute;n dentro del mismo grafo.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-7b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Orden de evaluaci&oacute;n</p>
+          <h2>Lectura del ejemplo de declaraciones</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Arista importante</h3>
+            <p>
+              Hay una arista desde <code>T.tipo</code> hacia <code>L.her</code> porque el heredado de la
+              lista depende del tipo sintetizado por el nodo de declaraci&oacute;n.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Falsos atributos</h3>
+            <p>
+              Cada acci&oacute;n <code>a&ntilde;adetipo(id, entrada, L.her)</code> se modela como un falso atributo,
+              lo que permite ubicarla en el mismo orden topol&oacute;gico que el resto de las reglas.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-8">
       <div class="slide-shell divider-shell">
         <p class="big-number">02</p>
@@ -309,6 +360,81 @@ hazhoja(valor)</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-10a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">AST</p>
+          <h2>Un &aacute;rbol sint&aacute;ctico abstracto es una forma condensada del &aacute;rbol de an&aacute;lisis</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Qu&eacute; conserva</h3>
+            <p>
+              Mantiene la estructura jer&aacute;rquica relevante de las construcciones del lenguaje y los
+              operadores que determinan el significado de la expresi&oacute;n.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Qu&eacute; elimina</h3>
+            <p>
+              Suprime s&iacute;mbolos auxiliares, no terminales intermedios y otros detalles sint&aacute;cticos
+              que no aportan valor sem&aacute;ntico a las etapas posteriores.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-10b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Construcci&oacute;n de expresiones</p>
+          <h2>La construcci&oacute;n del AST se parece a la traducci&oacute;n a forma posfija</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Proceso</h3>
+            <p>
+              Primero se construyen sub&aacute;rboles para subexpresiones, y despu&eacute;s se enlazan cuando se
+              reconoce el operador que las combina.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Restricci&oacute;n pr&aacute;ctica</h3>
+            <p>
+              La gram&aacute;tica usada por el parser puede no reflejar exactamente la estructura jer&aacute;rquica
+              natural, por lo que las acciones sem&aacute;nticas deben compensar esa diferencia.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-10c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">DDS para AST</p>
+          <h2>Los atributos pueden almacenar apuntadores al &aacute;rbol real</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Atributo <code>apn</code></h3>
+            <p>
+              Un atributo sintetizado como <code>apn</code> puede guardar el apuntador al nodo del &aacute;rbol
+              sint&aacute;ctico construido para la subexpresi&oacute;n reconocida.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Lectura del esquema</h3>
+            <p>
+              En producciones como <code>T -&gt; id</code> o <code>T -&gt; num</code> se crea una hoja; en
+              producciones con operadores se crea un nodo interno con los apuntadores de los hijos.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-11">
       <div class="slide-shell divider-shell">
         <p class="big-number">03</p>
@@ -350,6 +476,31 @@ resultado al tope</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-12a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Atributos en la pila</p>
+          <h2>Cada entrada del analizador puede llevar su valor sem&aacute;ntico</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Implantaci&oacute;n</h3>
+            <p>
+              En un parser ascendente, cada entrada de la pila puede almacenar el estado, el s&iacute;mbolo
+              y el valor del atributo sintetizado correspondiente.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Momento del c&aacute;lculo</h3>
+            <p>
+              Los atributos sintetizados se eval&uacute;an justo antes de colocar el nuevo no terminal
+              en la pila, por eso reduce es el punto natural de ejecuci&oacute;n.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-13">
       <div class="slide-shell divider-shell">
         <p class="big-number">04</p>
@@ -388,6 +539,56 @@ resultado al tope</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-14a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">L-atribuidas</p>
+          <h2>Ejemplo de una definici&oacute;n que no es por la izquierda</h2>
+        </div>
+        <div class="grid two">
+          <article class="card warning">
+            <h3>Por qu&eacute; falla</h3>
+            <p>
+              Un heredado como <code>Q.i</code> no puede depender de un atributo sintetizado de un
+              s&iacute;mbolo que aparece a su derecha, porque ese valor todav&iacute;a no existe al momento de usarlo.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Interpretaci&oacute;n</h3>
+            <p>
+              La definici&oacute;n obliga a mirar hacia adelante dentro de la producci&oacute;n, lo que rompe
+              la evaluaci&oacute;n natural de izquierda a derecha.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-14b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">L-atribuidas</p>
+          <h2>Un caso seguro: cuando todos los atributos son sintetizados</h2>
+        </div>
+        <div class="grid two">
+          <article class="card emphasis">
+            <h3>Ventaja</h3>
+            <p>
+              Si no hay heredados, no existe el riesgo de depender de informaci&oacute;n futura ni de
+              introducir ciclos de contexto entre s&iacute;mbolos hermanos.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Conclusi&oacute;n</h3>
+            <p>
+              Las definiciones exclusivamente sintetizadas son un subconjunto particularmente sencillo
+              dentro de las L-atribuidas y se eval&uacute;an sin conflictos.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="slide" id="slide-15">
       <div class="slide-shell">
         <div class="section-heading">
@@ -410,6 +611,31 @@ resultado al tope</code></pre>
           <h3>Puente con el bloque siguiente</h3>
           <p>Las definiciones por la izquierda son las que vuelven practicable este esquema durante el an&aacute;lisis.</p>
         </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-15a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Esquemas de traducci&oacute;n</p>
+          <h2>Restricciones para ubicar correctamente las acciones</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Regla 1</h3>
+            <p>
+              Un atributo heredado de un s&iacute;mbolo del lado derecho debe calcularse antes de cualquier
+              acci&oacute;n sem&aacute;ntica que lo necesite.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Regla 2</h3>
+            <p>
+              Una acci&oacute;n no puede usar un atributo sintetizado hasta que el sub&aacute;rbol que lo produce
+              ya haya sido reconocido y evaluado.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -471,6 +697,57 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-18a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Traducci&oacute;n descendente</p>
+          <h2>La eliminaci&oacute;n de recursi&oacute;n tambi&eacute;n exige propagar atributos</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Transformaci&oacute;n sem&aacute;ntica</h3>
+            <p>
+              Cuando se reemplaza una producci&oacute;n recursiva por la izquierda, no basta con cambiar
+              la forma de la gram&aacute;tica: hay que reubicar la informaci&oacute;n heredada y sintetizada.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Objetivo</h3>
+            <p>
+              El nuevo esquema debe conservar el mismo significado que la definici&oacute;n original,
+              aunque el parser ahora procese la entrada de otro modo.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-18b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Traductor predictivo</p>
+          <h2>Pasos generales para construirlo</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Pasos iniciales</h3>
+            <ol class="clean-list">
+              <li>Guardar atributos l&eacute;xicos en variables del token correspondiente.</li>
+              <li>Transformar heredados en par&aacute;metros de funciones.</li>
+              <li>Transformar sintetizados en valores de retorno.</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>Ubicaci&oacute;n de acciones</h3>
+            <p>
+              Las acciones sem&aacute;nticas deben escribirse donde el parser ya haya reconocido toda la
+              informaci&oacute;n necesaria para ejecutarlas correctamente.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-19">
       <div class="slide-shell divider-shell">
         <p class="big-number">06</p>
@@ -503,6 +780,81 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
           <h3>Conclusi&oacute;n t&eacute;cnica</h3>
           <p>Los sintetizados son naturales en LR; los heredados requieren ingenier&iacute;a extra para recrear el contexto que a&uacute;n no est&aacute; armado.</p>
         </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Acciones intercaladas</p>
+          <h2>Primero se transforman en producciones con marcadores</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Transformaci&oacute;n</h3>
+            <p>
+              Si una acci&oacute;n aparece intercalada en el lado derecho de la producci&oacute;n, se introduce
+              un nuevo no terminal marcador que deriva <code>epsilon</code>.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Ventaja</h3>
+            <p>
+              As&iacute; la acci&oacute;n queda asociada a una reducci&oacute;n concreta y puede ejecutarse en un punto
+              controlado del an&aacute;lisis ascendente.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Pila del analizador</p>
+          <h2>El contexto heredado se lee y se escribe sobre la pila</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Lectura desde la pila</h3>
+            <p>
+              Un parser ascendente puede recuperar los valores sem&aacute;nticos ya almacenados en el
+              tope o en posiciones cercanas de la pila para fabricar el heredado que necesita.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Ejemplo</h3>
+            <p>
+              En una declaraci&oacute;n como <code>real p, q, r</code>, cada reducci&oacute;n de la lista usa el
+              tipo heredado para asignarlo al identificador correspondiente.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Simulaci&oacute;n</p>
+          <h2>Los marcadores anticipan el momento de evaluaci&oacute;n del heredado</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>C&oacute;mo funciona</h3>
+            <p>
+              Se inserta un no terminal marcador justo antes del s&iacute;mbolo que necesitar&aacute; el contexto,
+              de modo que una reducci&oacute;n previa deje listo el valor heredado.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Resultado</h3>
+            <p>
+              Esta introducci&oacute;n sistem&aacute;tica de marcadores hace posible evaluar definiciones
+              por la izquierda dentro del marco de un analizador LR.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -541,6 +893,56 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-22a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Recorridos izquierda a derecha</p>
+          <h2>Todas las DDS L-atribuidas pueden implantarse con este recorrido</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Principio</h3>
+            <p>
+              Se invoca una funci&oacute;n recursiva para el no terminal y se visitan los hijos en el mismo
+              orden en que aparecen en la producci&oacute;n, propagando el contexto paso a paso.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Ejemplo del libro</h3>
+            <p>
+              Una DDS para calcular tama&ntilde;o y altura de f&oacute;rmulas usa un heredado y un sintetizado
+              y se adapta exactamente a este esquema.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-22b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Otros recorridos</p>
+          <h2>Si el &aacute;rbol est&aacute; expl&iacute;cito, se puede elegir otro orden de visita</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Flexibilidad</h3>
+            <p>
+              Cuando ya existe un &aacute;rbol de an&aacute;lisis expl&iacute;cito, los hijos de un nodo pueden visitarse
+              en cualquier orden que respete el grafo de dependencias.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Consecuencia</h3>
+            <p>
+              Esto permite evaluar DDS que no encajar&iacute;an de forma c&oacute;moda dentro de una traducci&oacute;n
+              inmediata durante el parsing.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-23">
       <div class="slide-shell divider-shell">
         <p class="big-number">08</p>
@@ -568,6 +970,57 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
             <h3>Optimizaci&oacute;n</h3>
             <p>Las reglas de copia <code>b := c</code> permiten reutilizar registros y evitar copias innecesarias.</p>
             <p class="keyline">El compilador no guarda todo para siempre; recicla espacio en cuanto la dependencia termina.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Asignaci&oacute;n de espacio</p>
+          <h2>El grafo de dependencias permite minimizar registros</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>M&eacute;todo</h3>
+            <ol class="clean-list">
+              <li>Se recorren los nodos del grafo en el orden en que deben evaluarse.</li>
+              <li>Al nacer un atributo, se le asigna un registro disponible.</li>
+              <li>Al terminar su duraci&oacute;n, ese registro vuelve al conjunto libre.</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>Resultado</h3>
+            <p>
+              Este procedimiento permite evaluar la DDS utilizando el menor n&uacute;mero posible de
+              registros temporales en tiempo de compilaci&oacute;n.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Evitar copias</p>
+          <h2>Las reglas b := c pueden reutilizar directamente el mismo registro</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Regla de copia</h3>
+            <p>
+              Si una regla solo copia un valor, no es necesario reservar un nuevo espacio:
+              ambos atributos pueden compartir el mismo registro mientras dure el valor.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Mejora</h3>
+            <p>
+              Tratar las copias como caso especial reduce todav&iacute;a m&aacute;s el consumo de registros
+              y evita movimientos innecesarios de datos.
+            </p>
           </article>
         </div>
       </div>
