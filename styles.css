@@ -343,6 +343,10 @@ a {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .card,
 .mini-card,
 .code-card,
@@ -518,6 +522,165 @@ a {
   margin-top: 0.15rem;
   background:
     linear-gradient(135deg, rgba(248, 251, 255, 0.98), rgba(238, 245, 252, 0.95));
+}
+
+.tree-note {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(53, 106, 200, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.tree-note strong {
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tree-note p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.parse-note {
+  border-color: rgba(53, 106, 200, 0.22);
+  background: rgba(53, 106, 200, 0.08);
+}
+
+.parse-note strong,
+.parse-tag {
+  color: var(--blue-deep);
+}
+
+.ast-note {
+  border-color: rgba(38, 128, 87, 0.22);
+  background: rgba(38, 128, 87, 0.08);
+}
+
+.ast-note strong,
+.ast-tag {
+  color: #1f7a57;
+}
+
+.combo-note {
+  border-color: rgba(103, 85, 179, 0.18);
+  background: rgba(103, 85, 179, 0.07);
+}
+
+.compare-table {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(53, 106, 200, 0.11);
+  box-shadow:
+    0 18px 34px rgba(18, 35, 70, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 0.9rem 0.95rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(53, 106, 200, 0.08);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.compare-table th {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(245, 248, 252, 0.95);
+}
+
+.compare-table tr:last-child td {
+  border-bottom: none;
+}
+
+.compare-table .parse-col {
+  background: rgba(53, 106, 200, 0.06);
+}
+
+.compare-table .ast-col {
+  background: rgba(38, 128, 87, 0.06);
+}
+
+.tree-visual {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.tree-panel {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem 1.05rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(53, 106, 200, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.tree-panel h3 {
+  font-size: 1.25rem;
+}
+
+.tree-panel.parse-panel {
+  border-color: rgba(53, 106, 200, 0.2);
+  background: rgba(53, 106, 200, 0.06);
+}
+
+.tree-panel.ast-panel {
+  border-color: rgba(38, 128, 87, 0.2);
+  background: rgba(38, 128, 87, 0.06);
+}
+
+.tree-code {
+  margin: 0;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(53, 106, 200, 0.1);
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--ink);
+  white-space: pre;
+}
+
+.tree-rule {
+  position: relative;
+  z-index: 1;
+  padding: 1rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(38, 128, 87, 0.18);
+  background: rgba(38, 128, 87, 0.08);
+}
+
+.tree-rule h3 {
+  margin-bottom: 0.55rem;
+  color: #1f7a57;
+}
+
+.tree-rule pre {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
 }
 
 .focus-card {
