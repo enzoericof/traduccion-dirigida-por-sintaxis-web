@@ -246,6 +246,8 @@ a {
 .label {
   display: inline-flex;
   width: fit-content;
+  justify-self: start;
+  align-self: start;
   padding: 0.42rem 0.76rem;
   border-radius: 999px;
   font-size: 0.72rem;
@@ -363,6 +365,29 @@ a {
 .band h3 {
   font-size: 1.45rem;
   line-height: 1.12;
+}
+
+.code-card {
+  align-content: start;
+}
+
+.semantic-card pre {
+  margin-top: 0;
+}
+
+.semantic-note {
+  display: grid;
+  gap: 0.82rem;
+  margin-top: 0.15rem;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+}
+
+.semantic-note h3,
+.semantic-note p {
+  margin: 0;
 }
 
 .card p,

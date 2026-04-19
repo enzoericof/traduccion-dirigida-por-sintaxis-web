@@ -2,6 +2,10 @@
 
 Presentación web de la materia **Compiladores** sobre el tema **Traducción Dirigida por la Sintaxis**.
 
+## Estado
+
+- Apartado 1 de 8 revisado por el autor de la exposición.
+
 ## Contenido
 
 - Portada y organización general del capítulo
