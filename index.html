@@ -23,8 +23,8 @@
           <p class="eyebrow">Materia: Compiladores</p>
           <h2>Traducci&oacute;n Dirigida por la Sintaxis</h2>
           <p class="lead">
-            Del reconocimiento sint&aacute;ctico al c&aacute;lculo de atributos, construcci&oacute;n de AST
-            y traducci&oacute;n durante el parsing.
+            Basado en el cap&iacute;tulo 5, siguiendo los primeros ocho subcap&iacute;tulos:
+            desde las definiciones dirigidas por la sintaxis hasta las consideraciones de espacio para atributos.
           </p>
           <div class="presenter-box">
             <p class="label">Integrantes</p>
@@ -41,42 +41,53 @@
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">Organizaci&oacute;n del cap&iacute;tulo</p>
-          <h2>C&oacute;mo vamos a desarrollar el cap&iacute;tulo 5</h2>
+          <h2>Los primeros ocho subcap&iacute;tulos del cap&iacute;tulo 5 gu&iacute;an toda la exposici&oacute;n</h2>
           <p class="outline-intro">
-            El contenido avanza desde la idea de una DDS hasta su implementaci&oacute;n
-            en analizadores descendentes y ascendentes, y cierra con evaluadores y uso de memoria.
+            La presentaci&oacute;n sigue el orden real del cap&iacute;tulo 5 del libro:
+            subcap&iacute;tulos 5.1 a 5.8, manteniendo el hilo entre reglas sem&aacute;nticas,
+            &aacute;rboles, evaluaci&oacute;n, traductores y memoria.
           </p>
         </div>
         <div class="grid two">
           <article class="card">
-            <span class="step">01</span>
+            <span class="step">5.1</span>
             <h3>Definiciones dirigidas por la sintaxis</h3>
-            <p>Qu&eacute; agrega una DDS a una gram&aacute;tica y c&oacute;mo se expresan sus reglas sem&aacute;nticas.</p>
+            <p>Concepto de DDS, atributos sintetizados y heredados, grafo de dependencias y orden de evaluaci&oacute;n.</p>
           </article>
           <article class="card">
-            <span class="step">02</span>
-            <h3>Parse Tree, AST y construcci&oacute;n de AST</h3>
-            <p>Distinci&oacute;n did&aacute;ctica entre ambos &aacute;rboles y c&oacute;mo una DDS puede construir el AST durante el an&aacute;lisis.</p>
+            <span class="step">5.2</span>
+            <h3>Construcci&oacute;n de &aacute;rboles sint&aacute;cticos</h3>
+            <p>Diferencia entre Parse Tree y AST, funciones <code>haznodo</code>/<code>hazhoja</code> y construcci&oacute;n sem&aacute;ntica del &aacute;rbol.</p>
           </article>
           <article class="card">
-            <span class="step">03</span>
-            <h3>Evaluaci&oacute;n ascendente de sintetizados</h3>
-            <p>La pila LR como soporte natural para calcular atributos en cada reducci&oacute;n.</p>
+            <span class="step">5.3</span>
+            <h3>Evaluaci&oacute;n ascendente de definiciones con atributos</h3>
+            <p>La pila LR como soporte para calcular atributos sintetizados durante cada reducci&oacute;n.</p>
           </article>
           <article class="card">
-            <span class="step">04</span>
-            <h3>Atributos por la izquierda</h3>
-            <p>C&oacute;mo circula el contexto cuando la informaci&oacute;n va del padre o de hermanos previos.</p>
+            <span class="step">5.4</span>
+            <h3>Definiciones con atributos por la izquierda</h3>
+            <p>Restricciones L-atribuidas, flujo del contexto y uso de esquemas de traducci&oacute;n.</p>
           </article>
           <article class="card">
-            <span class="step">05</span>
+            <span class="step">5.5</span>
             <h3>Traducci&oacute;n descendente</h3>
-            <p>Eliminaci&oacute;n de recursi&oacute;n por la izquierda y dise&ntilde;o de un traductor predictivo.</p>
+            <p>Adaptaci&oacute;n al an&aacute;lisis predictivo, acumuladores heredados y construcci&oacute;n de traductores recursivos.</p>
           </article>
           <article class="card">
-            <span class="step">06-08</span>
-            <h3>Heredados en LR, evaluadores y espacio</h3>
-            <p>Marcadores, recorridos recursivos y memoria para atributos en tiempo de compilaci&oacute;n.</p>
+            <span class="step">5.6</span>
+            <h3>Evaluaci&oacute;n ascendente de atributos heredados</h3>
+            <p>Uso de marcadores, acciones en <code>epsilon</code> y herencia de contexto sobre la pila LR.</p>
+          </article>
+          <article class="card">
+            <span class="step">5.7</span>
+            <h3>Evaluadores recursivos</h3>
+            <p>Recorridos sobre un Parse Tree expl&iacute;cito cuando la evaluaci&oacute;n ya no depende del orden del parser.</p>
+          </article>
+          <article class="card">
+            <span class="step">5.8</span>
+            <h3>Consideraciones de espacio para valores de atributos</h3>
+            <p>Duraci&oacute;n de atributos, reutilizaci&oacute;n de registros y uso eficiente de memoria intermedia.</p>
           </article>
         </div>
       </div>
@@ -84,9 +95,9 @@
 
     <section class="slide section-divider" id="slide-3">
       <div class="slide-shell divider-shell">
-        <p class="big-number">01</p>
+        <p class="big-number">5.1</p>
         <div>
-          <p class="eyebrow">Bloque 1</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.1</p>
           <h2>Definiciones dirigidas por la sintaxis</h2>
           <p class="lead">La gram&aacute;tica deja de solo reconocer y pasa a producir significado.</p>
         </div>
@@ -284,10 +295,10 @@ L.her := T.tipo</code></pre>
               Esto evita dejar fuera del an&aacute;lisis acciones importantes como imprimir, a&ntilde;adir tipos a la
               tabla de s&iacute;mbolos o construir estructuras auxiliares.
             </p>
-            <p>
-              En el ejemplo de declaraciones, cada acci&oacute;n <code>a&ntilde;adetipo(id, entrada, L.her)</code>
-              se modela justamente como uno de esos falsos atributos para que pueda ordenarse junto con el resto.
-            </p>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-7-grafo-dependencias.png" alt="Figura 5.7: grafo de dependencias del ejemplo de declaraciones">
+            </div>
+            <p class="figure-caption">Fig. 5.7. Grafo de dependencias para el &aacute;rbol del ejemplo con <code>L.her</code> y falsos atributos.</p>
           </article>
         </div>
         <article class="band">
@@ -310,11 +321,11 @@ L.her := T.tipo</code></pre>
 
     <section class="slide section-divider" id="slide-8">
       <div class="slide-shell divider-shell">
-        <p class="big-number">02</p>
+        <p class="big-number">5.2</p>
         <div>
-          <p class="eyebrow">Bloque 2</p>
-          <h2>Parse Tree, AST y construcci&oacute;n de AST</h2>
-          <p class="lead">La traducci&oacute;n orientada por la sintaxis distingue la estructura gramatical del Parse Tree y la estructura sem&aacute;ntica del AST.</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.2</p>
+          <h2>Construcci&oacute;n de &aacute;rboles sint&aacute;cticos</h2>
+          <p class="lead">Aqu&iacute; distinguimos Parse Tree y AST para explicar c&oacute;mo una DDS construye estructuras &uacute;tiles.</p>
         </div>
       </div>
     </section>
@@ -474,20 +485,19 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
           <h2>Funciones t&iacute;picas para expresiones</h2>
         </div>
         <div class="grid two">
-          <article class="code-card">
-            <p class="label">Primitivas del libro</p>
-            <pre><code>haznodo(op, izquierda, derecha)
-hazhoja(valor)</code></pre>
-            <p>Con estas funciones, una DDS puede ir armando sub&aacute;rboles del <span class="ast-tag">AST</span> mientras reconoce la entrada.</p>
+          <article class="card figure-card">
+            <h3>Fig. 5.9 del libro</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-9-haznodo-hazhoja.png" alt="Figura 5.9 con las reglas haznodo y hazhoja">
+            </div>
+            <p class="figure-caption">La DDS del libro usa <code>haznodo</code> y <code>hazhoja</code> para construir el &aacute;rbol sint&aacute;ctico de expresiones.</p>
           </article>
-          <article class="card">
-            <h3>Ejemplo: <code>a - 4 + c</code></h3>
-            <p>Se crean primero las hojas <code>a</code>, <code>4</code> y <code>c</code>; despu&eacute;s los nodos de <code>-</code> y <code>+</code>.</p>
-            <pre><code>      +
-     / \
-    -   c
-   / \
-  a   4</code></pre>
+          <article class="card figure-card">
+            <h3>Fig. 5.10: <code>a - 4 + c</code></h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-10-ast-a-4-c.png" alt="Figura 5.10: construcción del árbol sintáctico para a menos 4 más c">
+            </div>
+            <p class="figure-caption">El atributo <code>apn</code> va quedando asociado a la ra&iacute;z del sub&aacute;rbol construido en cada paso.</p>
           </article>
         </div>
         <article class="band">
@@ -537,11 +547,11 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
 
     <section class="slide section-divider" id="slide-11">
       <div class="slide-shell divider-shell">
-        <p class="big-number">03</p>
+        <p class="big-number">5.3</p>
         <div>
-          <p class="eyebrow">Bloque 3</p>
-          <h2>Evaluaci&oacute;n ascendente de atributos sintetizados</h2>
-          <p class="lead">El caso mas natural para un parser LR.</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.3</p>
+          <h2>Evaluaci&oacute;n ascendente de definiciones con atributos</h2>
+          <p class="lead">El caso m&aacute;s natural para un parser LR cuando las dependencias ya est&aacute;n en la pila.</p>
         </div>
       </div>
     </section>
@@ -552,33 +562,40 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
           <p class="eyebrow">Parsing LR</p>
           <h2>Los sintetizados se calculan justo en la reducci&oacute;n</h2>
         </div>
-        <div class="grid two">
+        <div class="grid three">
           <article class="card">
-            <h3>Fundamento</h3>
-            <p>Un analizador ascendente ya guarda fragmentos del <span class="parse-tag">Parse Tree</span> o valores sem&aacute;nticos parciales en la pila. Eso encaja perfecto con atributos sintetizados.</p>
-            <p>Cuando la producci&oacute;n se reduce, los valores de los hijos ya est&aacute;n disponibles.</p>
+            <h3>Qu&eacute; guarda la pila</h3>
+            <ol class="clean-list">
+              <li>El estado LR alcanzado.</li>
+              <li>El s&iacute;mbolo reconocido.</li>
+              <li>El valor sem&aacute;ntico sintetizado de ese s&iacute;mbolo.</li>
+            </ol>
+            <p>Por eso la pila no solo representa control sint&aacute;ctico: tambi&eacute;n conserva los resultados parciales del c&aacute;lculo.</p>
           </article>
           <article class="code-card">
-            <p class="label">Secuencia operativa</p>
-            <pre><code>Entrada: 3 5 +
-
-push 3
-push 5
-reduce -> 3 + 5
-resultado al tope</code></pre>
-            <p>La sem&aacute;ntica se ejecuta en el mismo instante en que se reconoce la producci&oacute;n.</p>
+            <p class="label">Reducci&oacute;n t&iacute;pica</p>
+            <pre><code>Pila antes: ... E(val=3) + T(val=5)
+Reduce:    E -&gt; E + T
+Acci&oacute;n:   E.val = E1.val + T.val
+Pila despu&eacute;s: ... E(val=8)</code></pre>
+            <p>La acci&oacute;n sem&aacute;ntica se ejecuta exactamente cuando la producci&oacute;n ya fue reconocida completa.</p>
+          </article>
+          <article class="card">
+            <h3>Por qu&eacute; es natural</h3>
+            <p>En un atributo sintetizado, el valor del padre depende de los hijos. En LR, esos hijos acaban de ser reconocidos y sus valores ya est&aacute;n en la pila.</p>
+            <p class="keyline">Primero se reconoce la producci&oacute;n; despu&eacute;s se consolida su significado.</p>
           </article>
         </div>
         <article class="band">
           <h3>Conclusi&oacute;n operativa</h3>
           <p>En un LR, la regla sem&aacute;ntica vive en <strong>reduce</strong>: la estructura y el valor se consolidan al mismo tiempo.</p>
           <p>
-            Por eso cada entrada de la pila puede almacenar no solo el estado y el s&iacute;mbolo reconocido,
-            sino tambi&eacute;n el valor sem&aacute;ntico sintetizado asociado a esa reducci&oacute;n.
+            El parser no necesita esperar al final del an&aacute;lisis para calcular. Cada reducci&oacute;n produce de inmediato
+            el valor del no terminal que reemplaza a la parte derecha.
           </p>
           <p>
-            Los valores quedan disponibles justo en el momento en que la producci&oacute;n se reduce y se
-            reemplaza por el no terminal correspondiente.
+            Esa es la raz&oacute;n por la que las traducciones con atributos sintetizados son el caso ideal para
+            analizadores ascendentes.
           </p>
         </article>
         <div class="tree-note combo-note">
@@ -588,11 +605,42 @@ resultado al tope</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-12b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ejemplo guiado</p>
+          <h2>En <code>3 + 5 * 2</code>, las reducciones respetan la precedencia y calculan el valor correcto</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Fig. 5.17</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-17-lr-pila.png" alt="Figura 5.17: movimientos del traductor con la entrada 3*5+4n">
+            </div>
+            <p class="figure-caption">La tabla muestra c&oacute;mo cambian <code>entrada</code>, <code>estado</code> y <code>val</code> a medida que el traductor reduce.</p>
+          </article>
+          <article class="card">
+            <h3>Qu&eacute; ense&ntilde;a el ejemplo</h3>
+            <ol class="clean-list">
+              <li>El valor sem&aacute;ntico queda en el tope de <code>val</code> despu&eacute;s de cada reducci&oacute;n.</li>
+              <li>El producto se consolida antes que la suma porque la gram&aacute;tica impone ese orden de reducci&oacute;n.</li>
+              <li>La sem&aacute;ntica no reordena la entrada: aprovecha el orden correcto del an&aacute;lisis LR.</li>
+            </ol>
+            <p class="keyline">El orden de reducci&oacute;n determina el orden del c&aacute;lculo sem&aacute;ntico.</p>
+          </article>
+        </div>
+        <div class="tree-note combo-note">
+          <strong>&Aacute;rbol de trabajo</strong>
+          <p>Las reducciones siguen el <span class="parse-tag">Parse Tree</span>; como efecto colateral pueden ir calculando valores o armando sub&aacute;rboles del <span class="ast-tag">AST</span>.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-13">
       <div class="slide-shell divider-shell">
-        <p class="big-number">04</p>
+        <p class="big-number">5.4</p>
         <div>
-          <p class="eyebrow">Bloque 4</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.4</p>
           <h2>Definiciones con atributos por la izquierda</h2>
           <p class="lead">La informaci&oacute;n heredada puede fluir, pero con restricciones claras.</p>
         </div>
@@ -607,34 +655,76 @@ resultado al tope</code></pre>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Permitido</h3>
+            <h3>Esquema permitido</h3>
+            <pre><code>D -&gt; T L
+L.in = T.tipo</code></pre>
             <ol class="clean-list">
-              <li>Depender de atributos del no terminal del lado izquierdo.</li>
-              <li>Depender de hermanos que ya aparecieron antes en la producci&oacute;n.</li>
-              <li>Combinar eso con atributos sintetizados.</li>
-              <li>En el caso extremo donde todos los atributos son sintetizados, no existe riesgo de mirar hacia la derecha.</li>
+              <li><code>L.in</code> depende del padre <code>D</code> y del hermano izquierdo <code>T</code>.</li>
+              <li>Ambos ya est&aacute;n disponibles cuando se empieza a procesar <code>L</code>.</li>
+              <li>Ese flujo permite una evaluaci&oacute;n segura de izquierda a derecha.</li>
             </ol>
           </article>
           <article class="card">
-            <h3>No permitido</h3>
+            <h3>Esquema no permitido</h3>
+            <pre><code>A -&gt; B C
+B.in = C.val</code></pre>
             <ol class="clean-list">
-              <li>Mirar hacia un s&iacute;mbolo que est&aacute; a la derecha y a&uacute;n no fue procesado.</li>
-              <li>Introducir dependencias circulares.</li>
-              <li>Usar un heredado como <code>Q.i</code> si depende de un atributo sintetizado de un s&iacute;mbolo que todav&iacute;a no fue reconocido.</li>
+              <li><code>B.in</code> intenta usar <code>C.val</code>, pero <code>C</code> todav&iacute;a no fue reconocido.</li>
+              <li>Eso obliga a mirar hacia la derecha dentro de la producci&oacute;n.</li>
+              <li>Por esa raz&oacute;n deja de ser una definici&oacute;n L-atribuida.</li>
             </ol>
-            <p class="keyline">Por eso estas definiciones se pueden evaluar en una pasada de izquierda a derecha.</p>
+            <p class="keyline">La regla pr&aacute;ctica es simple: nunca pedir informaci&oacute;n futura.</p>
           </article>
         </div>
         <article class="band">
-          <h3>Interpretaci&oacute;n de los ejemplos</h3>
+          <h3>Criterio operativo</h3>
           <p>
-            Una definici&oacute;n deja de ser por la izquierda cuando obliga a mirar hacia adelante dentro de la producci&oacute;n.
-            En cambio, si todos los atributos son sintetizados, la evaluaci&oacute;n sigue siendo segura porque no depende de contexto futuro.
+            Una definici&oacute;n L-atribuida es exactamente la que puede evaluarse avanzando por la producci&oacute;n sin volver atr&aacute;s
+            y sin consultar s&iacute;mbolos que todav&iacute;a no aparecieron.
           </p>
         </article>
         <div class="tree-note parse-note">
           <strong>&Aacute;rbol de trabajo</strong>
           <p>Las restricciones L-atribuidas se formulan sobre atributos asociados al <span class="parse-tag">Parse Tree</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-14b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ejemplo aplicado</p>
+          <h2>Las declaraciones tipadas muestran por qu&eacute; el flujo izquierda a derecha resulta &uacute;til</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Producciones t&iacute;picas</h3>
+            <pre><code>D -&gt; T L
+T -&gt; int | float
+L -&gt; L1 , id | id</code></pre>
+            <p>El tipo se reconoce una sola vez en <code>T</code> y luego se propaga como heredado a toda la lista <code>L</code>.</p>
+          </article>
+          <article class="card">
+            <h3>Lectura sem&aacute;ntica</h3>
+            <ol class="clean-list">
+              <li>Se obtiene <code>T.tipo = int</code>.</li>
+              <li>Ese valor se copia en <code>L.in</code>.</li>
+              <li>Cada <code>id</code> de la lista hereda el mismo tipo.</li>
+              <li>El parser puede ir cargando la tabla de s&iacute;mbolos a medida que avanza.</li>
+            </ol>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-5-l-her.png" alt="Figura 5.5: árbol con el atributo heredado L.her">
+            </div>
+            <p class="figure-caption">Fig. 5.5. El atributo heredado <code>L.her</code> transmite el tipo a cada identificador de la lista.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Valor did&aacute;ctico del ejemplo</h3>
+          <p>El tipo viaja desde la izquierda hacia la derecha porque la sintaxis de la declaraci&oacute;n primero anuncia el tipo y despu&eacute;s enumera los identificadores que deben heredarlo.</p>
+        </article>
+        <div class="tree-note parse-note">
+          <strong>&Aacute;rbol de trabajo</strong>
+          <p>El recorrido sigue el <span class="parse-tag">Parse Tree</span> de la declaraci&oacute;n; el atributo heredado transporta el contexto de tipo.</p>
         </div>
       </div>
     </section>
@@ -649,12 +739,13 @@ resultado al tope</code></pre>
           <article class="code-card">
             <p class="label">Idea central</p>
             <pre><code>E -&gt; E + T { print("+") }</code></pre>
-            <p>Las acciones pueden imprimir, construir nodos, verificar tipos o emitir c&oacute;digo.</p>
+            <p>La acci&oacute;n aparece escrita junto a la producci&oacute;n y se ejecuta cuando el parser llega al punto donde sus dependencias ya est&aacute;n disponibles.</p>
           </article>
           <article class="card">
             <h3>Restricci&oacute;n fundamental</h3>
             <p>Una acci&oacute;n no puede usar un atributo que a&uacute;n no existe.</p>
-            <p>Por eso las acciones se colocan en posiciones donde sus dependencias ya fueron satisfechas.</p>
+            <p>Por eso la posici&oacute;n de la acci&oacute;n dentro de la producci&oacute;n no es decorativa: determina si la traducci&oacute;n es correcta o no.</p>
+            <p class="keyline">Mover una acci&oacute;n de lugar puede cambiar el significado o volver imposible su evaluaci&oacute;n.</p>
           </article>
         </div>
         <article class="band">
@@ -672,11 +763,47 @@ resultado al tope</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-15b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Usos t&iacute;picos</p>
+          <h2>Un esquema de traducci&oacute;n sirve para mucho m&aacute;s que imprimir s&iacute;mbolos</h2>
+        </div>
+        <div class="grid three">
+          <article class="mini-card">
+            <h3>Salida posfija</h3>
+            <pre><code>E -&gt; E + T { print("+") }</code></pre>
+            <p>La acci&oacute;n se ejecuta despu&eacute;s de reconocer los operandos y por eso la salida queda en posfijo.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Construcci&oacute;n de AST</h3>
+            <pre><code>E.nodo = Nodo("+",
+              E1.nodo, T.nodo)</code></pre>
+            <p>La acci&oacute;n devuelve un nodo que resume la estructura sem&aacute;ntica de la expresi&oacute;n.</p>
+          </article>
+          <article class="mini-card">
+            <h3>C&oacute;digo intermedio</h3>
+            <pre><code>E.dir = nuevaTemp()
+emit(E.dir = E1.dir + T.dir)</code></pre>
+            <p>La traducci&oacute;n puede crear temporales y emitir instrucciones a medida que reconoce la producci&oacute;n.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Idea central del bloque</h3>
+          <p>Un esquema de traducci&oacute;n convierte la gram&aacute;tica en un procedimiento ejecutable: cada producci&oacute;n no solo reconoce estructura, sino que dispara el efecto sem&aacute;ntico correspondiente.</p>
+        </article>
+        <div class="tree-note combo-note">
+          <strong>&Aacute;rbol de trabajo</strong>
+          <p>Las acciones se sincronizan con el <span class="parse-tag">Parse Tree</span>, pero el resultado puede ser un valor, un <span class="ast-tag">AST</span>, una entrada de tabla de s&iacute;mbolos o c&oacute;digo intermedio.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-16">
       <div class="slide-shell divider-shell">
-        <p class="big-number">05</p>
+        <p class="big-number">5.5</p>
         <div>
-          <p class="eyebrow">Bloque 5</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.5</p>
           <h2>Traducci&oacute;n descendente</h2>
           <p class="lead">C&oacute;mo adaptar la sem&aacute;ntica a parsers predictivos.</p>
         </div>
@@ -708,10 +835,54 @@ resultado al tope</code></pre>
             <p class="keyline">No solo cambia la forma sint&aacute;ctica; hay que preservar el orden correcto de las acciones.</p>
           </article>
         </div>
-        <div class="code-row">
-          <pre><code>E  -&gt; T R
-R  -&gt; + T R | - T R | epsilon</code></pre>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Antes</p>
+            <pre><code>E -&gt; E + T | T</code></pre>
+            <p>La recursi&oacute;n aparece al inicio de la producci&oacute;n y por eso el parser predictivo entrar&iacute;a en un ciclo inmediato.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Despu&eacute;s</p>
+            <pre><code>E -&gt; T R
+R -&gt; + T R | epsilon</code></pre>
+            <p>La recursi&oacute;n se desplaza a un no terminal auxiliar que ya no impide el an&aacute;lisis descendente.</p>
+          </article>
         </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Conservaci&oacute;n sem&aacute;ntica</p>
+          <h2>La gram&aacute;tica cambia, pero el significado de la expresi&oacute;n debe seguir siendo el mismo</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Acumulador heredado</p>
+            <pre><code>E -&gt; T R
+R.in = T.val
+
+R -&gt; + T R1
+R1.in = R.in + T.val
+
+R -&gt; epsilon
+R.syn = R.in</code></pre>
+          </article>
+          <article class="card">
+            <h3>Lectura del mecanismo</h3>
+            <ol class="clean-list">
+              <li><code>T</code> calcula el primer valor.</li>
+              <li><code>R.in</code> lo recibe como acumulador parcial.</li>
+              <li>Cada nueva suma actualiza el heredado.</li>
+              <li>Cuando aparece <code>epsilon</code>, el resultado sintetizado final coincide con el acumulado.</li>
+            </ol>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Por qu&eacute; este ejemplo importa</h3>
+          <p>Eliminar recursi&oacute;n por la izquierda no es solo una t&eacute;cnica sint&aacute;ctica: obliga a redistribuir la informaci&oacute;n sem&aacute;ntica para que el nuevo recorrido produzca exactamente el mismo resultado que el original.</p>
+        </article>
       </div>
     </section>
 
@@ -729,6 +900,7 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
               Adem&aacute;s, los atributos l&eacute;xicos del token reconocido se guardan en variables y luego se usan
               dentro de las funciones correspondientes.
             </p>
+            <p class="keyline">La firma de la funci&oacute;n ya anticipa qu&eacute; contexto entra y qu&eacute; resultado sale.</p>
           </article>
           <article class="code-card">
             <p class="label">Esqueleto del traductor</p>
@@ -745,6 +917,10 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
             Para construir el traductor predictivo se transforman los heredados en par&aacute;metros, los sintetizados
             en valores de retorno y las acciones sem&aacute;nticas se ubican en el punto exacto donde sus dependencias ya existen.
           </p>
+          <p>
+            En una implementaci&oacute;n real, tambi&eacute;n se comprueban tokens esperados, se consumen lexemas del scanner
+            y se actualizan estructuras auxiliares como la tabla de s&iacute;mbolos o el AST en construcci&oacute;n.
+          </p>
         </article>
         <div class="tree-note combo-note">
           <strong>&Aacute;rbol de trabajo</strong>
@@ -755,9 +931,9 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
 
     <section class="slide section-divider" id="slide-19">
       <div class="slide-shell divider-shell">
-        <p class="big-number">06</p>
+        <p class="big-number">5.6</p>
         <div>
-          <p class="eyebrow">Bloque 6</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.6</p>
           <h2>Evaluaci&oacute;n ascendente de atributos heredados</h2>
           <p class="lead">El caso dif&iacute;cil: LR no ve tan f&aacute;cilmente el contexto del padre.</p>
         </div>
@@ -774,11 +950,14 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
           <article class="card">
             <h3>Problema</h3>
             <p>En an&aacute;lisis ascendente, cuando se necesita un heredado, todav&iacute;a puede no existir el nodo padre de forma expl&iacute;cita.</p>
+            <p>Eso impide pasar contexto del modo natural en que lo har&iacute;a una evaluaci&oacute;n top-down.</p>
           </article>
-          <article class="card">
-            <h3>Soluci&oacute;n</h3>
-            <p>Se insertan no terminales marcadores que producen <code>epsilon</code> y disparan acciones en el momento adecuado.</p>
-            <p>As&iacute; se simula el paso de informaci&oacute;n heredada sin romper el an&aacute;lisis LR.</p>
+          <article class="card figure-card">
+            <h3>Fig. 5.35: uso del marcador</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-35-marcador.png" alt="Figura 5.35: copiado de un valor de atributo a través de un marcador">
+            </div>
+            <p class="figure-caption">El marcador <code>M</code> permite copiar el valor heredado a una posici&oacute;n controlada de la derivaci&oacute;n.</p>
           </article>
         </div>
         <article class="band warning">
@@ -800,11 +979,42 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-20b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Interpretaci&oacute;n de la pila</p>
+          <h2>El marcador no agrega significado nuevo: solo adelanta el momento de ejecutar la acci&oacute;n</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Qu&eacute; hace realmente</h3>
+            <ol class="clean-list">
+              <li>Se reduce a <code>epsilon</code>, as&iacute; que no cambia la cadena reconocida.</li>
+              <li>Ejecuta una acci&oacute;n justo cuando el contexto necesario ya est&aacute; en la pila.</li>
+              <li>Guarda ese contexto en una posici&oacute;n accesible para la reducci&oacute;n siguiente.</li>
+              <li>Permite que un heredado llegue a tiempo a un s&iacute;mbolo reconocido despu&eacute;s.</li>
+            </ol>
+          </article>
+          <article class="card figure-card">
+            <h3>Fig. 5.33: pila del analizador</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-33-pila-l-her.png" alt="Figura 5.33: siempre que se reduce un lado derecho para L, T está justo abajo del lado derecho">
+            </div>
+            <p class="figure-caption">La pila revela por qu&eacute; <code>T</code> queda accesible justo debajo del lado derecho cuando se reduce un caso de <code>L</code>.</p>
+          </article>
+        </div>
+        <div class="tree-note parse-note">
+          <strong>&Aacute;rbol de trabajo</strong>
+          <p>El <span class="parse-tag">Parse Tree</span> reconocido no cambia en esencia; lo que cambia es la estrategia usada para disparar las acciones sem&aacute;nticas en el momento oportuno.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-21">
       <div class="slide-shell divider-shell">
-        <p class="big-number">07</p>
+        <p class="big-number">5.7</p>
         <div>
-          <p class="eyebrow">Bloque 7</p>
+          <p class="eyebrow">Subcap&iacute;tulo 5.7</p>
           <h2>Evaluadores recursivos</h2>
           <p class="lead">Si el Parse Tree o el AST ya existe expl&iacute;citamente, se puede recorrer en el orden que convenga.</p>
         </div>
@@ -825,6 +1035,7 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
               En particular, las DDS con atributos por la izquierda pueden implantarse recorriendo los hijos
               exactamente en el orden en que aparecen en la producci&oacute;n.
             </p>
+            <p class="keyline">El parser reconoce; el evaluador decide c&oacute;mo visitar el &aacute;rbol ya construido.</p>
           </article>
           <article class="code-card">
             <p class="label">Esquema conceptual</p>
@@ -842,6 +1053,10 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
             Si el Parse Tree ya existe expl&iacute;citamente, los hijos pueden visitarse en cualquier orden que respete
             el grafo de dependencias. Eso permite evaluar DDS que no encajar&iacute;an c&oacute;modamente en una traducci&oacute;n inmediata.
           </p>
+          <p>
+            El costo es que primero hay que construir y conservar el &aacute;rbol; la ganancia es una libertad mucho mayor
+            para elegir el orden de evaluaci&oacute;n.
+          </p>
         </article>
         <div class="tree-note combo-note">
           <strong>&Aacute;rbol de trabajo</strong>
@@ -850,12 +1065,39 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-22b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">&Oacute;rdenes de recorrido</p>
+          <h2>El tipo de atributo sugiere qu&eacute; recorrido del &aacute;rbol conviene usar</h2>
+        </div>
+        <div class="grid three">
+          <article class="mini-card">
+            <h3>Postorden</h3>
+            <p>Es el recorrido m&aacute;s natural para atributos sintetizados, porque primero visita hijos y despu&eacute;s calcula al padre.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Preorden o izquierda-derecha</h3>
+            <p>Resulta &uacute;til cuando un heredado debe llegar al hijo antes de seguir avanzando sobre el resto de la producci&oacute;n.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Orden guiado por dependencias</h3>
+            <p>Si el grafo de dependencias est&aacute; disponible, el evaluador puede visitar nodos en el orden exacto que exija la sem&aacute;ntica.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Idea fuerte del bloque</h3>
+          <p>Cuando el &aacute;rbol ya est&aacute; construido, el compilador recupera una libertad que los parsers online no tienen: puede escoger el recorrido m&aacute;s conveniente en lugar de obedecer ciegamente el momento del reconocimiento.</p>
+        </article>
+      </div>
+    </section>
+
     <section class="slide section-divider" id="slide-23">
       <div class="slide-shell divider-shell">
-        <p class="big-number">08</p>
+        <p class="big-number">5.8</p>
         <div>
-          <p class="eyebrow">Bloque 8</p>
-          <h2>Consideraciones de espacio</h2>
+          <p class="eyebrow">Subcap&iacute;tulo 5.8</p>
+          <h2>Consideraciones de espacio para valores de atributos</h2>
           <p class="lead">Los atributos tambi&eacute;n cuestan memoria, no solo tiempo.</p>
         </div>
       </div>
@@ -893,11 +1135,67 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
             Recorrer los nodos del grafo en el orden de evaluaci&oacute;n permite usar el menor n&uacute;mero posible
             de registros temporales durante la compilaci&oacute;n.
           </p>
+          <p>
+            El problema ya no es solo calcular bien, sino calcular bien usando la menor cantidad posible de memoria intermedia.
+          </p>
         </article>
         <div class="tree-note parse-note">
           <strong>&Aacute;rbol de trabajo</strong>
           <p>Estas duraciones se calculan para atributos asociados al <span class="parse-tag">Parse Tree</span> o a su grafo de dependencias derivado.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24b">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ejemplo de reutilizaci&oacute;n</p>
+          <h2>Un mismo registro temporal puede servir para varios atributos en distintos momentos</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Secuencia posible</h3>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Etapa</th>
+                  <th>Atributos vivos</th>
+                  <th>Registros ocupados</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><code>a.val</code>, <code>b.val</code></td>
+                  <td><code>R1</code>, <code>R2</code></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><code>t1 = a + b</code></td>
+                  <td><code>R1</code> reutilizado, <code>R2</code> libre</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><code>c.val</code>, <code>t1</code></td>
+                  <td><code>R2</code> vuelve a usarse para <code>c</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="card">
+            <h3>Lectura del ejemplo</h3>
+            <ol class="clean-list">
+              <li>Un registro no est&aacute; atado para siempre a un atributo.</li>
+              <li>Cuando una dependencia termina, el registro se libera.</li>
+              <li>La siguiente subexpresi&oacute;n puede reutilizar ese mismo espacio.</li>
+              <li>La reutilizaci&oacute;n baja el costo sin cambiar el resultado del c&aacute;lculo.</li>
+            </ol>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Conclusi&oacute;n pr&aacute;ctica</h3>
+          <p>Analizar la duraci&oacute;n de los atributos equivale a hacer administraci&oacute;n de recursos: el compilador decide cu&aacute;ndo reservar, reutilizar y liberar memoria temporal mientras eval&uacute;a la sem&aacute;ntica.</p>
+        </article>
       </div>
     </section>
 
@@ -920,11 +1218,15 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
             </ol>
           </article>
           <article class="card">
-            <h3>Idea de conclusi&oacute;n</h3>
+            <h3>Conclusi&oacute;n conceptual</h3>
             <p>
               El cap&iacute;tulo 5 muestra c&oacute;mo pasar del <span class="parse-tag">Parse Tree</span> a resultados reales:
               valores, tipos, un <span class="ast-tag">AST</span>, otras estructuras intermedias o c&oacute;digo. En otras palabras, ense&ntilde;a
               c&oacute;mo un parser deja de solo aceptar cadenas y empieza a traducir programas.
+            </p>
+            <p>
+              Desde all&iacute; se entiende por qu&eacute; la sem&aacute;ntica no es un agregado opcional, sino la parte que convierte
+              el an&aacute;lisis sint&aacute;ctico en una fase verdaderamente &uacute;til dentro del compilador.
             </p>
           </article>
         </div>
@@ -944,12 +1246,12 @@ R  -&gt; + T R | - T R | epsilon</code></pre>
               Aho, Alfred V.; Lam, Monica S.; Sethi, Ravi; Ullman, Jeffrey D.
               <strong>Compiladores: Principios, t&eacute;cnicas y herramientas</strong>.
             </p>
-            <p>Cap&iacute;tulo 5: Traducci&oacute;n orientada por la sintaxis.</p>
+            <p>Fuente principal utilizada para esta versi&oacute;n: <strong>Cap&iacute;tulo 5, subcap&iacute;tulos 5.1 a 5.8</strong>.</p>
           </article>
           <article class="card">
-            <h3>Material de apoyo</h3>
-            <p><strong>20250403 - Traducci&oacute;n dirigida por la Sintaxis - DC-GG.pdf</strong>.</p>
-            <p>Material de apoyo utilizado para complementar la organizaci&oacute;n y el desarrollo del contenido.</p>
+            <h3>Archivo de trabajo</h3>
+            <p><strong>Cap&iacute;tulo 5 recortado en PDF</strong>.</p>
+            <p>Archivo de trabajo usado como base directa para organizar contenido, ejemplos y subt&iacute;tulos.</p>
           </article>
         </div>
       </div>
