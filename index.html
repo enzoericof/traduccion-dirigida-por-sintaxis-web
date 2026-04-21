@@ -666,49 +666,9 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
       <div class="slide-shell divider-shell">
         <p class="big-number">5.3</p>
         <div>
-          <p class="eyebrow">Subcap&iacute;tulo 5.3</p>
-          <h2>Evaluaci&oacute;n ascendente de definiciones con atributos</h2>
-          <p class="lead">El caso m&aacute;s natural para un parser LR cuando las dependencias ya est&aacute;n en la pila.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="slide-11a">
-      <div class="slide-shell">
-        <div class="section-heading">
-          <p class="eyebrow">De especificar a implementar</p>
-          <h2>No toda DDS es igual de f&aacute;cil de convertir en traductor</h2>
-          <p>
-            Una DDS arbitraria puede exigir construir el Parse Tree completo, armar el grafo de dependencias
-            y reci&eacute;n despu&eacute;s decidir el orden de evaluaci&oacute;n. Por eso el cap&iacute;tulo se concentra
-            en familias &uacute;tiles que pueden implantarse de forma m&aacute;s directa.
-          </p>
-        </div>
-        <div class="implementation-map">
-          <article class="mini-card emphasis">
-            <span class="step">5.3</span>
-            <h3>Solo sintetizados</h3>
-            <p>Son el caso m&aacute;s simple: cada atributo depende de los hijos y se calcula cuando el parser reduce una producci&oacute;n.</p>
-          </article>
-          <article class="mini-card">
-            <span class="step">5.4</span>
-            <h3>Atributos por la izquierda</h3>
-            <p>Permiten heredados controlados: el contexto puede venir del padre o de hermanos anteriores, no de la derecha.</p>
-          </article>
-          <article class="mini-card">
-            <span class="step">5.5</span>
-            <h3>Traducci&oacute;n descendente</h3>
-            <p>En analizadores predictivos, los heredados encajan naturalmente como par&aacute;metros y los sintetizados como retornos.</p>
-          </article>
-          <article class="mini-card">
-            <span class="step">5.6</span>
-            <h3>Heredados en LR</h3>
-            <p>Es menos directo, pero se puede manejar con marcadores y con la informaci&oacute;n disponible en la pila.</p>
-          </article>
-        </div>
-        <div class="tree-note combo-note">
-          <strong>Idea de transici&oacute;n</strong>
-          <p>Hasta ahora vimos c&oacute;mo definir significado. Desde 5.3 empezamos a ver cu&aacute;ndo esa DDS se puede ejecutar durante el an&aacute;lisis sint&aacute;ctico, sin reconstruir todo el proceso conceptual de la Fig. 5.1.</p>
+          <p class="eyebrow">Bloque 3</p>
+          <h2>Evaluaci&oacute;n ascendente de atributos sintetizados</h2>
+          <p class="lead">El caso m&aacute;s natural para un parser LR.</p>
         </div>
       </div>
     </section>
@@ -716,79 +676,295 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
     <section class="slide" id="slide-12">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Parsing LR</p>
-          <h2>Los sintetizados se calculan justo en la reducci&oacute;n</h2>
+          <p class="eyebrow">Secci&oacute;n 5.3</p>
+          <h2>Evaluaci&oacute;n ascendente de definiciones con atributos sintetizados</h2>
         </div>
-        <div class="grid three">
+        <div class="grid two stack-grid">
           <article class="card">
-            <h3>Qu&eacute; guarda la pila</h3>
-            <ol class="clean-list">
-              <li>El estado LR alcanzado.</li>
-              <li>El s&iacute;mbolo reconocido.</li>
-              <li>El valor sem&aacute;ntico sintetizado de ese s&iacute;mbolo.</li>
-            </ol>
-            <p>Por eso la pila no solo representa control sint&aacute;ctico: tambi&eacute;n conserva los resultados parciales del c&aacute;lculo.</p>
-          </article>
-          <article class="code-card">
-            <p class="label">Reducci&oacute;n t&iacute;pica</p>
-            <pre><code>Pila antes: ... E(val=3) + T(val=5)
-Reduce:    E -&gt; E + T
-Acci&oacute;n:   E.val = E1.val + T.val
-Pila despu&eacute;s: ... E(val=8)</code></pre>
-            <p>La acci&oacute;n sem&aacute;ntica se ejecuta exactamente cuando la producci&oacute;n ya fue reconocida completa.</p>
+            <h3>La clase que nos interesa</h3>
+            <ul class="clean-list">
+              <li>Existen clases amplias de DDS para las que es f&aacute;cil construir traductores.</li>
+              <li>Una de ellas son las <strong>definiciones con atributos sintetizados</strong>.</li>
+              <li>Sus valores se calculan desde los hijos hacia el padre, justo cuando el parser ya reconoci&oacute; una producci&oacute;n.</li>
+            </ul>
           </article>
           <article class="card">
-            <h3>Por qu&eacute; es natural</h3>
-            <p>En un atributo sintetizado, el valor del padre depende de los hijos. En LR, esos hijos acaban de ser reconocidos y sus valores ya est&aacute;n en la pila.</p>
-            <p class="keyline">Primero se reconoce la producci&oacute;n; despu&eacute;s se consolida su significado.</p>
+            <h3>Por qu&eacute; encaja con LR</h3>
+            <ul class="clean-list">
+              <li>Un analizador sint&aacute;ctico ascendente conserva en su pila los s&iacute;mbolos gramaticales ya reconocidos.</li>
+              <li>Esa misma pila puede guardar los valores de los atributos sintetizados asociados.</li>
+              <li>En cada reducci&oacute;n se calculan los nuevos atributos usando los valores del lado derecho de la producci&oacute;n.</li>
+            </ul>
           </article>
         </div>
-        <article class="band">
-          <h3>Conclusi&oacute;n operativa</h3>
-          <p>En un LR, la regla sem&aacute;ntica vive en <strong>reduce</strong>: la estructura y el valor se consolidan al mismo tiempo.</p>
+        <article class="band compact-band">
+          <h3>Idea operativa</h3>
           <p>
-            El parser no necesita esperar al final del an&aacute;lisis para calcular. Cada reducci&oacute;n produce de inmediato
-            el valor del no terminal que reemplaza a la parte derecha.
-          </p>
-          <p>
-            Esa es la raz&oacute;n por la que las traducciones con atributos sintetizados son el caso ideal para
-            analizadores ascendentes.
+            Cuando se reduce una producci&oacute;n, los atributos necesarios ya est&aacute;n en la pila:
+            el traductor solo los lee, aplica la regla sem&aacute;ntica y deja el resultado en el lugar
+            del no terminal reducido.
           </p>
         </article>
-        <div class="tree-note combo-note">
-          <strong>&Aacute;rbol de trabajo</strong>
-          <p>Aqu&iacute; el parser reconoce el <span class="parse-tag">Parse Tree</span>; seg&uacute;n la DDS, ese mismo proceso puede calcular atributos o construir un <span class="ast-tag">AST</span>.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-12a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Pila LR enriquecida</p>
+          <h2>El parser puede guardar estado y valor sem&aacute;ntico en paralelo</h2>
         </div>
+        <div class="grid two stack-grid">
+          <article class="card">
+            <h3>Implantaci&oacute;n con generadores LR</h3>
+            <ul class="clean-list">
+              <li>Un generador de analizadores LR puede construir un traductor que eval&uacute;e atributos conforme se consume la entrada.</li>
+              <li>La pila guarda informaci&oacute;n de los sub&aacute;rboles que ya fueron analizados.</li>
+              <li>Se agregan campos extra para conservar los valores sintetizados.</li>
+            </ul>
+          </article>
+          <article class="code-card stack-visual-card">
+            <p class="label">Esquema de pila</p>
+            <div class="stack-sketch">
+              <span class="top-arrow">tope</span>
+              <table class="stack-table">
+                <thead>
+                  <tr>
+                    <th>estado</th>
+                    <th>val</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>...</td>
+                    <td>...</td>
+                  </tr>
+                  <tr>
+                    <td>X</td>
+                    <td>X.x</td>
+                  </tr>
+                  <tr>
+                    <td>Y</td>
+                    <td>Y.y</td>
+                  </tr>
+                  <tr class="stack-top">
+                    <td>Z</td>
+                    <td>Z.z</td>
+                  </tr>
+                  <tr>
+                    <td>...</td>
+                    <td>...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+        <article class="band compact-band">
+          <h3>Lectura</h3>
+          <p>
+            Cada entrada de <code>estado</code> apunta a la tabla del analizador LR(1), mientras que
+            <code>val</code> almacena el atributo sintetizado del s&iacute;mbolo que ocupa esa posici&oacute;n.
+          </p>
+        </article>
       </div>
     </section>
 
     <section class="slide" id="slide-12b">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Ejemplo guiado</p>
-          <h2>En <code>3 + 5 * 2</code>, las reducciones respetan la precedencia y calculan el valor correcto</h2>
+          <p class="eyebrow">Reducci&oacute;n</p>
+          <h2>Los atributos del lado derecho se leen desde posiciones del tope</h2>
         </div>
         <div class="grid two">
-          <article class="card figure-card">
-            <h3>Fig. 5.17</h3>
-            <div class="figure-frame">
-              <img class="book-figure" src="./imagenes/fig-5-17-lr-pila.png" alt="Figura 5.17: movimientos del traductor con la entrada 3*5+4n">
-            </div>
-            <p class="figure-caption">La tabla muestra c&oacute;mo cambian <code>entrada</code>, <code>estado</code> y <code>val</code> a medida que el traductor reduce.</p>
+          <article class="code-card">
+            <p class="label">Producci&oacute;n con regla sem&aacute;ntica</p>
+            <pre><code>A -&gt; X Y Z
+A.a := f(X.x, Y.y, Z.z)</code></pre>
+            <ul class="clean-list">
+              <li>Antes de reducir, <code>X.x</code>, <code>Y.y</code> y <code>Z.z</code> est&aacute;n en <code>val[tope - 2]</code>, <code>val[tope - 1]</code> y <code>val[tope]</code>.</li>
+              <li>Si un s&iacute;mbolo no tiene atributo, su entrada correspondiente en <code>val</code> queda sin definir.</li>
+            </ul>
           </article>
           <article class="card">
-            <h3>Qu&eacute; ense&ntilde;a el ejemplo</h3>
-            <ol class="clean-list">
-              <li>El valor sem&aacute;ntico queda en el tope de <code>val</code> despu&eacute;s de cada reducci&oacute;n.</li>
-              <li>El producto se consolida antes que la suma porque la gram&aacute;tica impone ese orden de reducci&oacute;n.</li>
-              <li>La sem&aacute;ntica no reordena la entrada: aprovecha el orden correcto del an&aacute;lisis LR.</li>
-            </ol>
-            <p class="keyline">El orden de reducci&oacute;n determina el orden del c&aacute;lculo sem&aacute;ntico.</p>
+            <h3>Movimiento de pila</h3>
+            <div class="reduction-flow">
+              <table class="stack-table mini-stack">
+                <thead>
+                  <tr>
+                    <th>pos</th>
+                    <th>estado</th>
+                    <th>val</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>tope - 2</td>
+                    <td>X</td>
+                    <td>X.x</td>
+                  </tr>
+                  <tr>
+                    <td>tope - 1</td>
+                    <td>Y</td>
+                    <td>Y.y</td>
+                  </tr>
+                  <tr class="stack-top">
+                    <td>tope</td>
+                    <td>Z</td>
+                    <td>Z.z</td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="flow-arrow">reduce</span>
+              <table class="stack-table mini-stack">
+                <thead>
+                  <tr>
+                    <th>pos</th>
+                    <th>estado</th>
+                    <th>val</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="stack-top">
+                    <td>tope</td>
+                    <td>A</td>
+                    <td>A.a</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Despu&eacute;s de reducir <code>XYZ</code> a <code>A</code>, el tope retrocede dos posiciones:
+              el estado que cubre a <code>A</code> y su atributo <code>A.a</code> quedan en la nueva cima.
+            </p>
           </article>
         </div>
-        <div class="tree-note combo-note">
-          <strong>&Aacute;rbol de trabajo</strong>
-          <p>Las reducciones siguen el <span class="parse-tag">Parse Tree</span>; como efecto colateral pueden ir calculando valores o armando sub&aacute;rboles del <span class="ast-tag">AST</span>.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-12c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ejemplo</p>
+          <h2>Calculadora de escritorio con analizador LR</h2>
+        </div>
+        <div class="grid two example-grid">
+          <article class="card table-card">
+            <h3>Producciones y acciones</h3>
+            <table class="semantic-table">
+              <thead>
+                <tr>
+                  <th>Producci&oacute;n</th>
+                  <th>Fragmento de c&oacute;digo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>L -&gt; E n</code></td>
+                  <td><code>print(val[tope])</code></td>
+                </tr>
+                <tr>
+                  <td><code>E -&gt; E1 + T</code></td>
+                  <td><code>val[tope] := val[tope - 2] + val[tope]</code></td>
+                </tr>
+                <tr>
+                  <td><code>E -&gt; T</code></td>
+                  <td>se conserva <code>val[tope]</code></td>
+                </tr>
+                <tr>
+                  <td><code>T -&gt; T1 * F</code></td>
+                  <td><code>val[tope] := val[tope - 2] * val[tope]</code></td>
+                </tr>
+                <tr>
+                  <td><code>T -&gt; F</code></td>
+                  <td>se conserva <code>val[tope]</code></td>
+                </tr>
+                <tr>
+                  <td><code>F -&gt; ( E )</code></td>
+                  <td><code>val[tope] := val[tope - 1]</code></td>
+                </tr>
+                <tr>
+                  <td><code>F -&gt; digito</code></td>
+                  <td>el token aporta su valor l&eacute;xico</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="card table-card">
+            <h3>An&aacute;lisis de <code>3 * 5 + 4 n</code></h3>
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>Entrada</th>
+                  <th>estado</th>
+                  <th>val</th>
+                  <th>Producci&oacute;n usada</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>3*5+4n</code></td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <td><code>*5+4n</code></td>
+                  <td><code>3</code></td>
+                  <td><code>3</code></td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <td><code>*5+4n</code></td>
+                  <td><code>F</code></td>
+                  <td><code>3</code></td>
+                  <td><code>F -&gt; digito</code></td>
+                </tr>
+                <tr>
+                  <td><code>*5+4n</code></td>
+                  <td><code>T</code></td>
+                  <td><code>3</code></td>
+                  <td><code>T -&gt; F</code></td>
+                </tr>
+                <tr>
+                  <td><code>+4n</code></td>
+                  <td><code>T * F</code></td>
+                  <td><code>3 - 5</code></td>
+                  <td><code>F -&gt; digito</code></td>
+                </tr>
+                <tr>
+                  <td><code>+4n</code></td>
+                  <td><code>T</code></td>
+                  <td><code>15</code></td>
+                  <td><code>T -&gt; T * F</code></td>
+                </tr>
+                <tr>
+                  <td><code>+4n</code></td>
+                  <td><code>E</code></td>
+                  <td><code>15</code></td>
+                  <td><code>E -&gt; T</code></td>
+                </tr>
+                <tr>
+                  <td><code>n</code></td>
+                  <td><code>E + T</code></td>
+                  <td><code>15 - 4</code></td>
+                  <td><code>T -&gt; F</code></td>
+                </tr>
+                <tr>
+                  <td><code>n</code></td>
+                  <td><code>E</code></td>
+                  <td><code>19</code></td>
+                  <td><code>E -&gt; E + T</code></td>
+                </tr>
+                <tr>
+                  <td><code>L</code></td>
+                  <td><code>L</code></td>
+                  <td><code>19</code></td>
+                  <td><code>L -&gt; E n</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
         </div>
       </div>
     </section>
