@@ -42,13 +42,8 @@
         <div class="section-heading">
           <p class="eyebrow">Organizaci&oacute;n del cap&iacute;tulo</p>
           <h2>Los primeros ocho subcap&iacute;tulos del cap&iacute;tulo 5 gu&iacute;an toda la exposici&oacute;n</h2>
-          <p class="outline-intro">
-            La presentaci&oacute;n sigue el orden real del cap&iacute;tulo 5 del libro:
-            subcap&iacute;tulos 5.1 a 5.8, manteniendo el hilo entre reglas sem&aacute;nticas,
-            &aacute;rboles, evaluaci&oacute;n, traductores y memoria.
-          </p>
         </div>
-        <div class="grid two">
+        <div class="grid three">
           <article class="card">
             <span class="step">5.1</span>
             <h3>Definiciones dirigidas por la sintaxis</h3>
@@ -88,6 +83,56 @@
             <span class="step">5.8</span>
             <h3>Consideraciones de espacio para valores de atributos</h3>
             <p>Duraci&oacute;n de atributos, reutilizaci&oacute;n de registros y uso eficiente de memoria intermedia.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-2a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Idea previa del cap&iacute;tulo</p>
+          <h2>Antes de 5.1: primero veremos DDS y despu&eacute;s esquemas de traducci&oacute;n</h2>
+        </div>
+        <div class="intro-strip">
+          <article class="mini-card">
+            <h3>1. Existen dos formas de traducir</h3>
+            <p>
+              La materia usa dos notaciones: <strong>DDS</strong> y <strong>esquemas de traducci&oacute;n</strong>.
+            </p>
+          </article>
+          <article class="mini-card">
+            <h3>2. Ambas siguen la Fig. 5.1: el camino conceptual f&aacute;cil</h3>
+            <div class="diagram">
+              <span>entrada</span>
+              <span class="arrow">&rarr;</span>
+              <span>Parse Tree</span>
+              <span class="arrow">&rarr;</span>
+              <span>grafo</span>
+              <span class="arrow">&rarr;</span>
+              <span>orden</span>
+            </div>
+            <p>
+              La idea base es pasar de entrada a &aacute;rbol, dependencias y orden de evaluaci&oacute;n.
+            </p>
+          </article>
+          <article class="mini-card">
+            <h3>3. No hace falta seguirlo al pie de la letra</h3>
+            <p>
+              En una implementaci&oacute;n real, las reglas pueden evaluarse durante el an&aacute;lisis sint&aacute;ctico.
+            </p>
+          </article>
+          <article class="mini-card emphasis">
+            <h3>4. Primero nos centramos en DDS</h3>
+            <p>
+              Las DDS especifican atributos, reglas sem&aacute;nticas y dependencias entre valores.
+            </p>
+          </article>
+          <article class="mini-card emphasis">
+            <h3>5. Luego veremos esquemas de traducci&oacute;n</h3>
+            <p>
+              Los esquemas colocan acciones dentro de la gram&aacute;tica y hacen m&aacute;s visible el orden.
+            </p>
           </article>
         </div>
       </div>
@@ -218,6 +263,53 @@ L.her := T.tipo</code></pre>
         <div class="tree-note parse-note">
           <strong>&Aacute;rbol de trabajo</strong>
           <p>Aqu&iacute; los atributos se eval&uacute;an sobre nodos del <span class="parse-tag">Parse Tree</span>; el AST puede construirse como resultado de esas mismas reglas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-6a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Atributos en el Parse Tree</p>
+          <h2>Ejemplos visuales: sintetizados vs. heredados</h2>
+          <p>
+            Las figuras muestran la diferencia central: los sintetizados suben desde los hijos,
+            mientras que los heredados transmiten contexto desde el padre o desde la izquierda.
+          </p>
+        </div>
+        <div class="attribute-figure-grid">
+          <article class="figure-card synthesized-figure">
+            <div class="figure-label">Sintetizados</div>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Captura%20de%20pantalla%202026-04-21%20101430.png" alt="Definici&oacute;n dirigida por la sintaxis de una calculadora sencilla">
+            </div>
+            <p class="figure-caption">Fig. 5.2: cada regla calcula el atributo <code>val</code> usando valores ya disponibles en sus hijos.</p>
+          </article>
+          <article class="figure-card synthesized-figure">
+            <div class="figure-label">Sintetizados</div>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Captura%20de%20pantalla%202026-04-21%20101436.png" alt="Parse Tree anotado para 3 * 5 + 4 n con atributos sintetizados">
+            </div>
+            <p class="figure-caption">Fig. 5.3: el valor final aparece arriba porque primero se calculan los valores de las hojas y subexpresiones.</p>
+          </article>
+          <article class="figure-card inherited-figure">
+            <div class="figure-label">Heredados</div>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Captura%20de%20pantalla%202026-04-21%20101440.png" alt="Definici&oacute;n dirigida por la sintaxis con atributo heredado L.her">
+            </div>
+            <p class="figure-caption">Fig. 5.4: <code>L.her</code> recibe el tipo de <code>T.tipo</code> y lo usa para anotar cada identificador.</p>
+          </article>
+          <article class="figure-card inherited-figure">
+            <div class="figure-label">Heredados</div>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Captura%20de%20pantalla%202026-04-21%20101444.png" alt="Parse Tree con el atributo heredado her en cada nodo etiquetado con L">
+            </div>
+            <p class="figure-caption">Fig. 5.5: el contexto <code>real</code> se copia hacia los nodos de la lista antes de registrar los identificadores.</p>
+          </article>
+        </div>
+        <div class="tree-note parse-note">
+          <strong>&Aacute;rbol de trabajo</strong>
+          <p>Estas figuras trabajan sobre el <span class="parse-tag">Parse Tree</span>: los atributos se escriben sobre sus nodos para mostrar qu&eacute; valor depende de cu&aacute;l.</p>
         </div>
       </div>
     </section>
@@ -449,26 +541,20 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">AST</p>
-          <h2>El parser no solo valida: tambi&eacute;n puede producir el AST</h2>
+          <h2>El Parse Tree suele ser demasiado detallado y por eso conviene construir un AST</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>&Aacute;rbol sint&aacute;ctico abstracto</h3>
-            <p>Es una forma condensada del Parse Tree. Elimina ruido gramatical y conserva la estructura sem&aacute;ntica relevante.</p>
-            <p>Los operadores y palabras clave suelen quedar en nodos internos, no como hojas separadas.</p>
-            <p>
-              Conserva la jerarqu&iacute;a que realmente importa para el significado de la construcci&oacute;n y
-              para las fases posteriores del compilador.
-            </p>
+            <h3>Por qu&eacute; no alcanza el Parse Tree</h3>
+            <p>El &aacute;rbol de an&aacute;lisis sint&aacute;ctico conserva demasiado detalle gramatical para usarlo directamente como representaci&oacute;n intermedia.</p>
+            <p>En expresiones, eso significa que aparecen muchos no terminales auxiliares y nodos que sirven para justificar la derivaci&oacute;n, pero no para traducir ni optimizar.</p>
+            <p>Por eso se construye un <span class="ast-tag">AST</span> m&aacute;s compacto, donde los operadores quedan como nodos internos y los operandos como hijos.</p>
           </article>
           <article class="card">
-            <h3>Por qu&eacute; importa</h3>
-            <p>Permite separar el an&aacute;lisis sint&aacute;ctico de etapas posteriores como chequeo de tipos, optimizaci&oacute;n o generaci&oacute;n de c&oacute;digo.</p>
-            <p>
-              Suprime s&iacute;mbolos auxiliares, no terminales intermedios y otros detalles de la gram&aacute;tica que
-              no aportan valor sem&aacute;ntico directo.
-            </p>
-            <p class="keyline">Conclusi&oacute;n: el AST es el puente entre reconocer y compilar.</p>
+            <h3>Por qu&eacute; el AST es mejor para el compilador</h3>
+            <p>Permite separar la traducci&oacute;n del an&aacute;lisis sint&aacute;ctico: primero el parser reconoce la entrada y despu&eacute;s el compilador trabaja sobre una estructura m&aacute;s limpia.</p>
+            <p>Eso es importante porque una gram&aacute;tica adecuada para parsear no siempre coincide con la estructura conceptual m&aacute;s c&oacute;moda para traducir.</p>
+            <p class="keyline">Conclusi&oacute;n: el AST conserva la estructura realmente &uacute;til para chequeo sem&aacute;ntico, optimizaci&oacute;n y generaci&oacute;n de c&oacute;digo.</p>
           </article>
         </div>
         <div class="tree-note ast-note">
@@ -482,7 +568,7 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">Ejemplo de construcci&oacute;n</p>
-          <h2>Funciones t&iacute;picas para expresiones</h2>
+          <h2>La construcci&oacute;n formal del AST se apoya en <code>haznodo</code> y <code>hazhoja</code></h2>
         </div>
         <div class="grid two">
           <article class="card figure-card">
@@ -501,16 +587,10 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
           </article>
         </div>
         <article class="band">
-          <h3>Interpretaci&oacute;n conceptual</h3>
-          <p>El parser va reconociendo la gram&aacute;tica y produce el <span class="parse-tag">Parse Tree</span>, pero las acciones sem&aacute;nticas pueden ir devolviendo punteros a nodos del <span class="ast-tag">AST</span>. As&iacute; el AST nace junto con el an&aacute;lisis.</p>
-          <p>
-            Esta construcci&oacute;n se parece a la traducci&oacute;n a forma posfija: primero aparecen las subexpresiones,
-            despu&eacute;s se conectan mediante el operador que las combina.
-          </p>
-          <p>
-            Como la gram&aacute;tica usada por el parser puede no reflejar exactamente la estructura jer&aacute;rquica natural,
-            las acciones sem&aacute;nticas compensan esa diferencia y construyen el <span class="ast-tag">AST</span> correcto.
-          </p>
+          <h3>Qu&eacute; hace cada constructor</h3>
+          <p><code>hazhoja(...)</code> crea los nodos terminales, por ejemplo para <code>id</code> o <code>num</code>.</p>
+          <p><code>haznodo(op, izquierda, derecha)</code> crea un nodo interno para el operador y enlaza los sub&aacute;rboles ya construidos.</p>
+          <p>La idea clave es que la regla sem&aacute;ntica devuelve un puntero al nodo reci&eacute;n creado, no solo un valor num&eacute;rico o un tipo.</p>
         </article>
       </div>
     </section>
@@ -519,7 +599,7 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">DDS para AST</p>
-          <h2>Los atributos pueden almacenar apuntadores al AST real</h2>
+          <h2>As&iacute; se arma el AST paso a paso usando el atributo sintetizado <code>apn</code></h2>
         </div>
         <div class="grid two">
           <article class="card">
@@ -528,19 +608,56 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
               Un atributo sintetizado como <code>apn</code> puede guardar el apuntador al nodo del <span class="ast-tag">AST</span>
               sint&aacute;ctico construido para la subexpresi&oacute;n reconocida.
             </p>
+            <p>Eso permite que cada producci&oacute;n devuelva no un valor num&eacute;rico, sino la ra&iacute;z del fragmento de &aacute;rbol que acaba de crear.</p>
+            <p>En otras palabras, cada no terminal va quedando asociado a un apuntador que representa su sub&aacute;rbol dentro del AST.</p>
           </article>
           <article class="card">
-            <h3>Interpretaci&oacute;n del esquema</h3>
-            <p>
-              En producciones como <code>T -&gt; id</code> o <code>T -&gt; num</code> se crea una hoja; en
-              producciones con operadores se crea un nodo interno con los apuntadores de los hijos.
-            </p>
+            <h3>Secuencia de construcci&oacute;n</h3>
+            <ol class="clean-list">
+              <li>Si la producci&oacute;n reconoce un terminal como <code>id</code> o <code>num</code>, se crea una hoja con <code>hazhoja(...)</code>.</li>
+              <li>Ese apuntador se guarda en <code>apn</code> para que el no terminal devuelva su propio sub&aacute;rbol.</li>
+              <li>Cuando se reduce una producci&oacute;n con operador, se toma el <code>apn</code> de los hijos y se crea un nodo interno con <code>haznodo(...)</code>.</li>
+              <li>El nuevo apuntador vuelve a almacenarse en <code>apn</code> y pasa a representar toda la subexpresi&oacute;n.</li>
+            </ol>
           </article>
         </div>
         <div class="tree-rule">
-          <h3>Regla sem&aacute;ntica de construcci&oacute;n de AST</h3>
+          <h3>Regla sem&aacute;ntica t&iacute;pica</h3>
           <pre><code>E -&gt; E1 + T
 E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
+          <p>Cuando se usa la producci&oacute;n <code>E -&gt; E1 + T</code>, la acci&oacute;n sem&aacute;ntica construye un nodo <code>+</code> cuyos hijos son justamente los &aacute;rboles ya construidos para <code>E1</code> y <code>T</code>.</p>
+          <p>La idea formal es siempre la misma: si los hijos ya tienen asociado un apuntador, la producci&oacute;n actual crea el nodo del operador y devuelve su direcci&oacute;n como atributo sintetizado.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-10d">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">AST y GDA</p>
+          <h2>Una DDS tambi&eacute;n puede construir grafos dirigidos ac&iacute;clicos para compartir subexpresiones</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Del &aacute;rbol al GDA</h3>
+            <p>En un &aacute;rbol sint&aacute;ctico com&uacute;n, una subexpresi&oacute;n repetida aparece duplicada tantas veces como se use.</p>
+            <p>En un <strong>grafo dirigido ac&iacute;clico</strong> o <strong>GDA</strong>, el compilador puede compartir un mismo nodo entre varios padres cuando la subexpresi&oacute;n es id&eacute;ntica.</p>
+            <p class="keyline">Eso evita repetir estructura y prepara el terreno para detectar subexpresiones comunes, algo clave m&aacute;s adelante en optimizaci&oacute;n.</p>
+          </article>
+          <article class="card">
+            <h3>M&eacute;todo del n&uacute;mero de valor</h3>
+            <p>Cada nodo se busca o se crea seg&uacute;n su signatura: operador m&aacute;s hijos.</p>
+            <ol class="clean-list">
+              <li>Si ya existe un nodo con la misma signatura, se reutiliza.</li>
+              <li>Si no existe, se crea uno nuevo.</li>
+              <li>As&iacute; el compilador comparte estructura en lugar de representarla repetidamente.</li>
+            </ol>
+            <p>La idea de fondo es que el compilador no siempre necesita construir la misma informaci&oacute;n dos veces si puede compartirla estructuralmente.</p>
+          </article>
+        </div>
+        <div class="tree-note ast-note">
+          <strong>&Aacute;rbol de trabajo</strong>
+          <p>En esta parte seguimos sobre la representaci&oacute;n sem&aacute;ntica: primero como <span class="ast-tag">AST</span> y luego como GDA cuando conviene compartir sub&aacute;rboles id&eacute;nticos.</p>
         </div>
       </div>
     </section>
@@ -771,9 +888,9 @@ L -&gt; L1 , id | id</code></pre>
         </div>
         <div class="grid three">
           <article class="mini-card">
-            <h3>Salida posfija</h3>
-            <pre><code>E -&gt; E + T { print("+") }</code></pre>
-            <p>La acci&oacute;n se ejecuta despu&eacute;s de reconocer los operandos y por eso la salida queda en posfijo.</p>
+            <h3>Tabla de s&iacute;mbolos</h3>
+            <pre><code>D -&gt; T id { a&ntilde;adirTipo(id, T.tipo) }</code></pre>
+            <p>La acci&oacute;n puede registrar informaci&oacute;n sem&aacute;ntica en cuanto la declaraci&oacute;n ya fue reconocida correctamente.</p>
           </article>
           <article class="mini-card">
             <h3>Construcci&oacute;n de AST</h3>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de grafos de dependencias DDS</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">Compiladores - Capitulo 5</p>
+      <h1>Generador de grafos de dependencias</h1>
+      <p>
+        Carga producciones y reglas semanticas de una DDS. La herramienta detecta atributos,
+        construye un unico grafo de dependencias y calcula un unico orden de evaluacion valido.
+      </p>
+    </section>
+
+    <section class="workspace">
+      <article class="panel input-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Entrada</p>
+            <h2>Gramatica y reglas semanticas</h2>
+          </div>
+          <button id="loadExample" type="button">Restaurar ejemplo</button>
+        </div>
+        <textarea id="source" spellcheck="false"></textarea>
+        <div class="actions">
+          <button id="analyze" type="button">Generar grafo y orden</button>
+          <button id="clear" type="button" class="ghost">Limpiar</button>
+        </div>
+        <details class="help">
+          <summary>Formato rapido</summary>
+          <pre><code>E -> E1 + T
+  E.val = E1.val + T.val
+
+T -> digito
+  T.val = digito.lexval</code></pre>
+          <p>Usa nombres como <code>E1</code>, <code>T1</code> cuando el mismo simbolo aparece mas de una vez.</p>
+        </details>
+      </article>
+
+      <section class="results">
+        <article class="panel summary-panel">
+          <p class="eyebrow">Resumen</p>
+          <div id="summary" class="summary-grid"></div>
+        </article>
+        <div id="messages" class="messages"></div>
+        <div id="output" class="output"></div>
+      </section>
+    </section>
+  </main>
+
+  <template id="graphTemplate">
+    <article class="production-card">
+      <div class="production-head">
+        <div>
+          <p class="eyebrow">Resultado global</p>
+          <h2 class="production-title">Grafo unico de la DDS cargada</h2>
+        </div>
+        <span class="status-pill"></span>
+      </div>
+      <div class="production-grid">
+        <section>
+          <h3>Reglas detectadas</h3>
+          <ol class="rules-list"></ol>
+        </section>
+        <section>
+          <h3>Orden de evaluacion global</h3>
+          <ol class="order-list"></ol>
+        </section>
+      </div>
+      <section class="graph-section">
+        <h3>Grafo de dependencias</h3>
+        <div class="graph"></div>
+      </section>
+    </article>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>

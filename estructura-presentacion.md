@@ -8,6 +8,9 @@ Basada en el capítulo 5, subcapítulos `5.1` a `5.8`.
 2. Índice general  
    Recorrido por los subcapítulos 5.1 a 5.8
 
+Nota previa al subcapítulo 5.1  
+   Dos formas de traducir: primero DDS y luego esquemas de traducción
+
 3. Subcapítulo 5.1  
    Definiciones dirigidas por la sintaxis
 
@@ -18,7 +21,7 @@ Basada en el capítulo 5, subcapítulos `5.1` a `5.8`.
    Dependencias entre atributos
 
 6. Tipos de atributos  
-   Sintetizados y heredados
+   Sintetizados y heredados, con apoyo visual de calculadora y declaraciones
 
 7. Grafo y orden de evaluación  
    Dependencias, orden topológico y ciclos
@@ -36,79 +39,82 @@ Basada en el capítulo 5, subcapítulos `5.1` a `5.8`.
     La misma expresión vista como Parse Tree y como AST
 
 12. AST  
-    El parser puede producir un AST útil
+    El Parse Tree suele ser demasiado detallado y por eso se construye un AST útil
 
 13. Construcción de expresiones  
-    Funciones típicas y ejemplo de AST
+    Funciones `haznodo` / `hazhoja` como base formal para construir el AST
 
 14. DDS para construir AST  
-    Apuntadores al AST y regla semántica de construcción
+    Atributo `apn`, secuencia de construcción y regla semántica paso a paso
 
-15. Subcapítulo 5.3  
+15. AST y GDA  
+    Subexpresiones comunes, GDA y método del número de valor
+
+16. Subcapítulo 5.3  
     Evaluación ascendente de definiciones con atributos
 
-16. Parsing LR  
+17. Parsing LR  
     La pila, la reducción y el cálculo semántico
 
-17. Ejemplo guiado de LR  
+18. Ejemplo guiado de LR  
     Precedencia y cálculo sobre `3 + 5 * 2`
 
-18. Subcapítulo 5.4  
+19. Subcapítulo 5.4  
     Definiciones con atributos por la izquierda
 
-19. L-atribuidas  
+20. L-atribuidas  
     Reglas permitidas y no permitidas
 
-20. Ejemplo de declaraciones tipadas  
+21. Ejemplo de declaraciones tipadas  
     Propagación del tipo hacia la lista de identificadores
 
-21. Esquemas de traducción  
+22. Esquemas de traducción  
     Acciones semánticas dentro de la gramática
 
-22. Usos típicos de un esquema  
-    Posfija, AST y código intermedio
+23. Usos típicos de un esquema  
+    Tabla de símbolos, AST y código intermedio
 
-23. Subcapítulo 5.5  
+24. Subcapítulo 5.5  
     Traducción descendente
 
-24. Eliminación de recursión por la izquierda  
+25. Eliminación de recursión por la izquierda  
     Adaptación para descenso recursivo
 
-25. Conservación semántica  
+26. Conservación semántica  
     Acumuladores heredados y preservación del significado
 
-26. Traductor predictivo  
+27. Traductor predictivo  
     Heredados en descenso recursivo y construcción durante el recorrido
 
-27. Subcapítulo 5.6  
+28. Subcapítulo 5.6  
     Evaluación ascendente de atributos heredados
 
-28. Heredados en LR  
+29. Heredados en LR  
     Marcadores, pila y disparo controlado de acciones
 
-29. Interpretación del marcador  
+30. Interpretación del marcador  
     Cómo adelanta el contexto sin cambiar la cadena reconocida
 
-30. Subcapítulo 5.7  
+31. Subcapítulo 5.7  
     Evaluadores recursivos
 
-31. Evaluadores recursivos  
+32. Evaluadores recursivos  
     Recorridos sobre Parse Tree explícito
 
-32. Órdenes de recorrido  
+33. Órdenes de recorrido  
     Postorden, izquierda-derecha y recorrido guiado por dependencias
 
-33. Subcapítulo 5.8  
+34. Subcapítulo 5.8  
     Consideraciones de espacio para valores de atributos
 
-34. Memoria para atributos  
+35. Memoria para atributos  
     Duración de valores, registros y copias
 
-35. Reutilización de registros  
+36. Reutilización de registros  
     Ejemplo de vida útil y reciclaje de temporales
 
-36. Cierre  
+37. Cierre  
     Síntesis conceptual del capítulo
 
-37. Bibliografía  
+38. Bibliografía  
     Capítulo 5 y material bibliográfico de apoyo
