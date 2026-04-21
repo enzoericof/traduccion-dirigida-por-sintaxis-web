@@ -673,6 +673,46 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
       </div>
     </section>
 
+    <section class="slide" id="slide-11a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">De especificar a implementar</p>
+          <h2>No toda DDS es igual de f&aacute;cil de convertir en traductor</h2>
+          <p>
+            Una DDS arbitraria puede exigir construir el Parse Tree completo, armar el grafo de dependencias
+            y reci&eacute;n despu&eacute;s decidir el orden de evaluaci&oacute;n. Por eso el cap&iacute;tulo se concentra
+            en familias &uacute;tiles que pueden implantarse de forma m&aacute;s directa.
+          </p>
+        </div>
+        <div class="implementation-map">
+          <article class="mini-card emphasis">
+            <span class="step">5.3</span>
+            <h3>Solo sintetizados</h3>
+            <p>Son el caso m&aacute;s simple: cada atributo depende de los hijos y se calcula cuando el parser reduce una producci&oacute;n.</p>
+          </article>
+          <article class="mini-card">
+            <span class="step">5.4</span>
+            <h3>Atributos por la izquierda</h3>
+            <p>Permiten heredados controlados: el contexto puede venir del padre o de hermanos anteriores, no de la derecha.</p>
+          </article>
+          <article class="mini-card">
+            <span class="step">5.5</span>
+            <h3>Traducci&oacute;n descendente</h3>
+            <p>En analizadores predictivos, los heredados encajan naturalmente como par&aacute;metros y los sintetizados como retornos.</p>
+          </article>
+          <article class="mini-card">
+            <span class="step">5.6</span>
+            <h3>Heredados en LR</h3>
+            <p>Es menos directo, pero se puede manejar con marcadores y con la informaci&oacute;n disponible en la pila.</p>
+          </article>
+        </div>
+        <div class="tree-note combo-note">
+          <strong>Idea de transici&oacute;n</strong>
+          <p>Hasta ahora vimos c&oacute;mo definir significado. Desde 5.3 empezamos a ver cu&aacute;ndo esa DDS se puede ejecutar durante el an&aacute;lisis sint&aacute;ctico, sin reconstruir todo el proceso conceptual de la Fig. 5.1.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="slide" id="slide-12">
       <div class="slide-shell">
         <div class="section-heading">

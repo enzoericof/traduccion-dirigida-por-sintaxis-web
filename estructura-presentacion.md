@@ -53,68 +53,71 @@ Nota previa al subcapítulo 5.1
 16. Subcapítulo 5.3  
     Evaluación ascendente de definiciones con atributos
 
-17. Parsing LR  
+17. De especificar a implementar  
+    Familias de DDS fáciles de implantar: sintetizados, atributos por la izquierda, descendente y heredados en LR con marcadores
+
+18. Parsing LR  
     La pila, la reducción y el cálculo semántico
 
-18. Ejemplo guiado de LR  
+19. Ejemplo guiado de LR  
     Precedencia y cálculo sobre `3 + 5 * 2`
 
-19. Subcapítulo 5.4  
+20. Subcapítulo 5.4  
     Definiciones con atributos por la izquierda
 
-20. L-atribuidas  
+21. L-atribuidas  
     Reglas permitidas y no permitidas
 
-21. Ejemplo de declaraciones tipadas  
+22. Ejemplo de declaraciones tipadas  
     Propagación del tipo hacia la lista de identificadores
 
-22. Esquemas de traducción  
+23. Esquemas de traducción  
     Acciones semánticas dentro de la gramática
 
-23. Usos típicos de un esquema  
+24. Usos típicos de un esquema  
     Tabla de símbolos, AST y código intermedio
 
-24. Subcapítulo 5.5  
+25. Subcapítulo 5.5  
     Traducción descendente
 
-25. Eliminación de recursión por la izquierda  
+26. Eliminación de recursión por la izquierda  
     Adaptación para descenso recursivo
 
-26. Conservación semántica  
+27. Conservación semántica  
     Acumuladores heredados y preservación del significado
 
-27. Traductor predictivo  
+28. Traductor predictivo  
     Heredados en descenso recursivo y construcción durante el recorrido
 
-28. Subcapítulo 5.6  
+29. Subcapítulo 5.6  
     Evaluación ascendente de atributos heredados
 
-29. Heredados en LR  
+30. Heredados en LR  
     Marcadores, pila y disparo controlado de acciones
 
-30. Interpretación del marcador  
+31. Interpretación del marcador  
     Cómo adelanta el contexto sin cambiar la cadena reconocida
 
-31. Subcapítulo 5.7  
+32. Subcapítulo 5.7  
     Evaluadores recursivos
 
-32. Evaluadores recursivos  
+33. Evaluadores recursivos  
     Recorridos sobre Parse Tree explícito
 
-33. Órdenes de recorrido  
+34. Órdenes de recorrido  
     Postorden, izquierda-derecha y recorrido guiado por dependencias
 
-34. Subcapítulo 5.8  
+35. Subcapítulo 5.8  
     Consideraciones de espacio para valores de atributos
 
-35. Memoria para atributos  
+36. Memoria para atributos  
     Duración de valores, registros y copias
 
-36. Reutilización de registros  
+37. Reutilización de registros  
     Ejemplo de vida útil y reciclaje de temporales
 
-37. Cierre  
+38. Cierre  
     Síntesis conceptual del capítulo
 
-38. Bibliografía  
+39. Bibliografía  
     Capítulo 5 y material bibliográfico de apoyo
