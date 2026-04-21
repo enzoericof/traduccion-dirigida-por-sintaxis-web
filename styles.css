@@ -915,6 +915,10 @@ a {
   overflow-x: auto;
 }
 
+.lr-figure .book-figure {
+  max-height: 22rem;
+}
+
 .stack-sketch {
   display: grid;
   grid-template-columns: auto minmax(12rem, 18rem);
@@ -1043,6 +1047,53 @@ a {
 .trace-table th,
 .trace-table td {
   text-align: left;
+}
+
+.scheme-example-grid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+.scheme-code-card {
+  align-content: start;
+  gap: 0.62rem;
+}
+
+.scheme-code-card h3 {
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+
+.scheme-code-card pre {
+  font-size: 0.8rem;
+  line-height: 1.38;
+}
+
+.postfix-result {
+  position: relative;
+  z-index: 1;
+  padding: 0.78rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(53, 106, 200, 0.12);
+  background: rgba(86, 168, 230, 0.08);
+}
+
+.postfix-result p {
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.wide-table-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+.action-tree {
+  font-size: 0.86rem !important;
+  line-height: 1.42 !important;
+}
+
+.wide-table-grid pre {
+  font-size: 0.78rem;
+  line-height: 1.42;
 }
 
 .section-divider .slide-shell,
@@ -1175,7 +1226,9 @@ a {
   }
 
   .reduction-flow,
-  .example-grid {
+  .example-grid,
+  .scheme-example-grid,
+  .wide-table-grid {
     grid-template-columns: 1fr;
   }
 

@@ -890,80 +890,15 @@ A.a := f(X.x, Y.y, Z.z)</code></pre>
               </tbody>
             </table>
           </article>
-          <article class="card table-card">
-            <h3>An&aacute;lisis de <code>3 * 5 + 4 n</code></h3>
-            <table class="trace-table">
-              <thead>
-                <tr>
-                  <th>Entrada</th>
-                  <th>estado</th>
-                  <th>val</th>
-                  <th>Producci&oacute;n usada</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>3*5+4n</code></td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td><code>*5+4n</code></td>
-                  <td><code>3</code></td>
-                  <td><code>3</code></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td><code>*5+4n</code></td>
-                  <td><code>F</code></td>
-                  <td><code>3</code></td>
-                  <td><code>F -&gt; digito</code></td>
-                </tr>
-                <tr>
-                  <td><code>*5+4n</code></td>
-                  <td><code>T</code></td>
-                  <td><code>3</code></td>
-                  <td><code>T -&gt; F</code></td>
-                </tr>
-                <tr>
-                  <td><code>+4n</code></td>
-                  <td><code>T * F</code></td>
-                  <td><code>3 - 5</code></td>
-                  <td><code>F -&gt; digito</code></td>
-                </tr>
-                <tr>
-                  <td><code>+4n</code></td>
-                  <td><code>T</code></td>
-                  <td><code>15</code></td>
-                  <td><code>T -&gt; T * F</code></td>
-                </tr>
-                <tr>
-                  <td><code>+4n</code></td>
-                  <td><code>E</code></td>
-                  <td><code>15</code></td>
-                  <td><code>E -&gt; T</code></td>
-                </tr>
-                <tr>
-                  <td><code>n</code></td>
-                  <td><code>E + T</code></td>
-                  <td><code>15 - 4</code></td>
-                  <td><code>T -&gt; F</code></td>
-                </tr>
-                <tr>
-                  <td><code>n</code></td>
-                  <td><code>E</code></td>
-                  <td><code>19</code></td>
-                  <td><code>E -&gt; E + T</code></td>
-                </tr>
-                <tr>
-                  <td><code>L</code></td>
-                  <td><code>L</code></td>
-                  <td><code>19</code></td>
-                  <td><code>L -&gt; E n</code></td>
-                </tr>
-              </tbody>
-            </table>
+          <article class="card figure-card lr-figure">
+            <h3>Movimientos para <code>3 * 5 + 4 n</code></h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-17-lr-pila.png" alt="Movimientos del traductor LR con estado, val y producci&oacute;n utilizada">
+            </div>
+            <p class="figure-caption">
+              En cada reducci&oacute;n, la columna <code>val</code> muestra el valor sintetizado que queda asociado
+              con el nuevo s&iacute;mbolo de la pila.
+            </p>
           </article>
         </div>
       </div>
@@ -975,7 +910,7 @@ A.a := f(X.x, Y.y, Z.z)</code></pre>
         <div>
           <p class="eyebrow">Subcap&iacute;tulo 5.4</p>
           <h2>Definiciones con atributos por la izquierda</h2>
-          <p class="lead">La informaci&oacute;n heredada puede fluir, pero con restricciones claras.</p>
+          <p class="lead">La informaci&oacute;n heredada puede fluir de izquierda a derecha durante el an&aacute;lisis.</p>
         </div>
       </div>
     </section>
@@ -983,81 +918,95 @@ A.a := f(X.x, Y.y, Z.z)</code></pre>
     <section class="slide" id="slide-14">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">L-atribuidas</p>
-          <h2>El contexto solo puede venir del padre o de hermanos a la izquierda</h2>
+          <p class="eyebrow">Definici&oacute;n</p>
+          <h2>El orden de evaluaci&oacute;n queda unido al orden del an&aacute;lisis sint&aacute;ctico</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Esquema permitido</h3>
-            <pre><code>D -&gt; T L
-L.in = T.tipo</code></pre>
-            <ol class="clean-list">
-              <li><code>L.in</code> depende del padre <code>D</code> y del hermano izquierdo <code>T</code>.</li>
-              <li>Ambos ya est&aacute;n disponibles cuando se empieza a procesar <code>L</code>.</li>
-              <li>Ese flujo permite una evaluaci&oacute;n segura de izquierda a derecha.</li>
-            </ol>
+            <h3>Idea intuitiva</h3>
+            <p>
+              Cuando la traducci&oacute;n ocurre durante el an&aacute;lisis, los atributos deben evaluarse en el mismo
+              orden en que el parser crea los nodos del &aacute;rbol de an&aacute;lisis.
+            </p>
+            <p>
+              Se llaman definiciones por la izquierda porque la informaci&oacute;n parece fluir de izquierda a derecha:
+              desde el padre o desde s&iacute;mbolos ya procesados hacia los siguientes s&iacute;mbolos.
+            </p>
           </article>
           <article class="card">
-            <h3>Esquema no permitido</h3>
-            <pre><code>A -&gt; B C
-B.in = C.val</code></pre>
+            <h3>Definici&oacute;n formal</h3>
+            <pre><code>A -&gt; X1 X2 ... Xn</code></pre>
+            <p>Un atributo heredado de <code>Xj</code> solo puede depender de:</p>
             <ol class="clean-list">
-              <li><code>B.in</code> intenta usar <code>C.val</code>, pero <code>C</code> todav&iacute;a no fue reconocido.</li>
-              <li>Eso obliga a mirar hacia la derecha dentro de la producci&oacute;n.</li>
-              <li>Por esa raz&oacute;n deja de ser una definici&oacute;n L-atribuida.</li>
+              <li>Atributos de <code>X1, X2, ..., Xj-1</code>, los s&iacute;mbolos ubicados a su izquierda.</li>
+              <li>Atributos heredados de <code>A</code>, el no terminal del lado izquierdo.</li>
             </ol>
-            <p class="keyline">La regla pr&aacute;ctica es simple: nunca pedir informaci&oacute;n futura.</p>
           </article>
         </div>
-        <article class="band">
-          <h3>Criterio operativo</h3>
+        <article class="band compact-band">
+          <h3>Observaci&oacute;n clave</h3>
           <p>
-            Una definici&oacute;n L-atribuida es exactamente la que puede evaluarse avanzando por la producci&oacute;n sin volver atr&aacute;s
-            y sin consultar s&iacute;mbolos que todav&iacute;a no aparecieron.
+            Toda definici&oacute;n con atributos sintetizados es tambi&eacute;n una definici&oacute;n con atributos por la izquierda:
+            las restricciones formales afectan a los atributos heredados, no a los sintetizados.
+          </p>
+          <p>
+            Estas definiciones incluyen todas las DDS basadas en gram&aacute;ticas LL(1), donde el recorrido predictivo
+            procesa cada producci&oacute;n de izquierda a derecha.
           </p>
         </article>
-        <div class="tree-note parse-note">
-          <strong>&Aacute;rbol de trabajo</strong>
-          <p>Las restricciones L-atribuidas se formulan sobre atributos asociados al <span class="parse-tag">Parse Tree</span>.</p>
-        </div>
       </div>
     </section>
 
     <section class="slide" id="slide-14b">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Ejemplo aplicado</p>
-          <h2>Las declaraciones tipadas muestran por qu&eacute; el flujo izquierda a derecha resulta &uacute;til</h2>
+          <p class="eyebrow">Contraejemplo</p>
+          <h2>Una dependencia hacia la derecha rompe la condici&oacute;n L-atribuida</h2>
         </div>
         <div class="grid two">
-          <article class="card">
-            <h3>Producciones t&iacute;picas</h3>
-            <pre><code>D -&gt; T L
-T -&gt; int | float
-L -&gt; L1 , id | id</code></pre>
-            <p>El tipo se reconoce una sola vez en <code>T</code> y luego se propaga como heredado a toda la lista <code>L</code>.</p>
+          <article class="card table-card">
+            <h3>Definici&oacute;n propuesta</h3>
+            <table class="semantic-table">
+              <thead>
+                <tr>
+                  <th>Producci&oacute;n</th>
+                  <th>Reglas sem&aacute;nticas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>A -&gt; L M</code></td>
+                  <td><code>L.i := l(A.i)</code><br><code>M.i := m(L.s)</code><br><code>A.s := f(M.s)</code></td>
+                </tr>
+                <tr>
+                  <td><code>A -&gt; Q R</code></td>
+                  <td><code>R.i := r(A.i)</code><br><code>Q.i := q(R.s)</code><br><code>A.s := f(Q.s)</code></td>
+                </tr>
+              </tbody>
+            </table>
           </article>
           <article class="card">
-            <h3>Lectura sem&aacute;ntica</h3>
-            <ol class="clean-list">
-              <li>Se obtiene <code>T.tipo = int</code>.</li>
-              <li>Ese valor se copia en <code>L.in</code>.</li>
-              <li>Cada <code>id</code> de la lista hereda el mismo tipo.</li>
-              <li>El parser puede ir cargando la tabla de s&iacute;mbolos a medida que avanza.</li>
-            </ol>
-            <div class="figure-frame">
-              <img class="book-figure" src="./imagenes/fig-5-5-l-her.png" alt="Figura 5.5: árbol con el atributo heredado L.her">
-            </div>
-            <p class="figure-caption">Fig. 5.5. El atributo heredado <code>L.her</code> transmite el tipo a cada identificador de la lista.</p>
+            <h3>D&oacute;nde falla</h3>
+            <p>
+              En <code>A -&gt; Q R</code>, el atributo heredado <code>Q.i</code> depende de <code>R.s</code>.
+              Pero <code>R</code> est&aacute; a la derecha de <code>Q</code>, as&iacute; que todav&iacute;a no fue procesado.
+            </p>
+            <p>
+              Esa regla obliga a mirar hacia el futuro dentro de la producci&oacute;n.
+            </p>
+            <p class="keyline">
+              No es una definici&oacute;n con atributos por la izquierda porque un heredado consulta un sintetizado
+              de un s&iacute;mbolo a su derecha.
+            </p>
           </article>
         </div>
         <article class="band">
-          <h3>Valor did&aacute;ctico del ejemplo</h3>
-          <p>El tipo viaja desde la izquierda hacia la derecha porque la sintaxis de la declaraci&oacute;n primero anuncia el tipo y despu&eacute;s enumera los identificadores que deben heredarlo.</p>
+          <h3>Regla pr&aacute;ctica</h3>
+          <p>Un heredado no debe pedir informaci&oacute;n a un s&iacute;mbolo que todav&iacute;a no fue reconocido.</p>
         </article>
         <div class="tree-note parse-note">
-          <strong>&Aacute;rbol de trabajo</strong>
-          <p>El recorrido sigue el <span class="parse-tag">Parse Tree</span> de la declaraci&oacute;n; el atributo heredado transporta el contexto de tipo.</p>
+          <strong>Criterio</strong>
+          <p>La evaluaci&oacute;n debe poder hacerse de izquierda a derecha dentro de cada producci&oacute;n.</p>
         </div>
       </div>
     </section>
@@ -1066,27 +1015,34 @@ L -&gt; L1 , id | id</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">Esquemas de traducci&oacute;n</p>
-          <h2>Acciones sem&aacute;nticas incrustadas dentro de la gram&aacute;tica</h2>
+          <h2>Una gram&aacute;tica puede llevar acciones sem&aacute;nticas dentro de sus producciones</h2>
         </div>
         <div class="grid two">
-          <article class="code-card">
-            <p class="label">Idea central</p>
-            <pre><code>E -&gt; E + T { print("+") }</code></pre>
-            <p>La acci&oacute;n aparece escrita junto a la producci&oacute;n y se ejecuta cuando el parser llega al punto donde sus dependencias ya est&aacute;n disponibles.</p>
+          <article class="card">
+            <h3>Qu&eacute; es</h3>
+            <p>Un esquema de traducci&oacute;n es una gram&aacute;tica independiente del contexto en la que:</p>
+            <ul class="clean-list">
+              <li>Se asocian atributos con los s&iacute;mbolos gramaticales.</li>
+              <li>Se insertan acciones sem&aacute;nticas entre llaves dentro de los lados derechos de las producciones.</li>
+              <li>Las acciones pueden usar atributos sintetizados y heredados.</li>
+            </ul>
           </article>
           <article class="card">
-            <h3>Restricci&oacute;n fundamental</h3>
-            <p>Una acci&oacute;n no puede usar un atributo que a&uacute;n no existe.</p>
-            <p>Por eso la posici&oacute;n de la acci&oacute;n dentro de la producci&oacute;n no es decorativa: determina si la traducci&oacute;n es correcta o no.</p>
-            <p class="keyline">Mover una acci&oacute;n de lugar puede cambiar el significado o volver imposible su evaluaci&oacute;n.</p>
+            <h3>Acciones sem&aacute;nticas</h3>
+            <p>
+              Son fragmentos de c&oacute;digo que se ejecutan durante el an&aacute;lisis sint&aacute;ctico para realizar
+              tareas concretas: calcular valores, imprimir resultados, construir nodos o registrar informaci&oacute;n.
+            </p>
+            <pre><code>E -&gt; E + T { print("+") }</code></pre>
+            <p class="keyline">La posici&oacute;n de la acci&oacute;n determina cu&aacute;ndo se ejecuta.</p>
           </article>
         </div>
         <article class="band">
-          <h3>Relaci&oacute;n con el siguiente bloque</h3>
-          <p>Las definiciones por la izquierda son las que vuelven practicable este esquema durante el an&aacute;lisis.</p>
+          <h3>Cuidado principal</h3>
+          <p>La acci&oacute;n debe ubicarse en un punto donde todos los atributos que consulta ya est&eacute;n disponibles.</p>
           <p>
-            En particular, un heredado debe calcularse antes de cualquier acci&oacute;n que lo necesite, y
-            un sintetizado solo puede usarse cuando el sub&aacute;rbol del <span class="parse-tag">Parse Tree</span> que lo produce ya fue reconocido y evaluado.
+            Por eso las restricciones de las definiciones con atributos por la izquierda motivan la forma de
+            escribir esquemas de traducci&oacute;n.
           </p>
         </article>
         <div class="tree-note combo-note">
@@ -1099,35 +1055,137 @@ L -&gt; L1 , id | id</code></pre>
     <section class="slide" id="slide-15b">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Usos t&iacute;picos</p>
-          <h2>Un esquema de traducci&oacute;n sirve para mucho m&aacute;s que imprimir s&iacute;mbolos</h2>
+          <p class="eyebrow">Ejemplo de esquema</p>
+          <h2>De expresiones infijas a postfijas imprimiendo acciones en el recorrido</h2>
         </div>
-        <div class="grid three">
-          <article class="mini-card">
-            <h3>Tabla de s&iacute;mbolos</h3>
-            <pre><code>D -&gt; T id { a&ntilde;adirTipo(id, T.tipo) }</code></pre>
-            <p>La acci&oacute;n puede registrar informaci&oacute;n sem&aacute;ntica en cuanto la declaraci&oacute;n ya fue reconocida correctamente.</p>
+        <div class="grid two scheme-example-grid">
+          <article class="card scheme-code-card">
+            <h3>Antes: con s&iacute;mbolos concretos</h3>
+            <pre><code>expr -&gt; t&eacute;rmino resto
+resto -&gt; + t&eacute;rmino { print('+') } resto
+resto -&gt; - t&eacute;rmino { print('-') } resto
+resto -&gt; epsilon
+t&eacute;rmino -&gt; 0 { print('0') }
+t&eacute;rmino -&gt; 1 { print('1') }
+...
+t&eacute;rmino -&gt; 9 { print('9') }</code></pre>
+            <h3>Simplificado: con tokens l&eacute;xicos</h3>
+            <pre><code>E -&gt; T R
+R -&gt; opsuma T { print(opsuma.lexema) } R
+R -&gt; epsilon
+T -&gt; num { print(num.val) }</code></pre>
           </article>
-          <article class="mini-card">
-            <h3>Construcci&oacute;n de AST</h3>
-            <pre><code>E.nodo = Nodo("+",
-              E1.nodo, T.nodo)</code></pre>
-            <p>La acci&oacute;n devuelve un nodo que resume la estructura sem&aacute;ntica de la expresi&oacute;n.</p>
-          </article>
-          <article class="mini-card">
-            <h3>C&oacute;digo intermedio</h3>
-            <pre><code>E.dir = nuevaTemp()
-emit(E.dir = E1.dir + T.dir)</code></pre>
-            <p>La traducci&oacute;n puede crear temporales y emitir instrucciones a medida que reconoce la producci&oacute;n.</p>
+          <article class="card">
+            <h3>Entrada <code>9 - 5 + 2</code></h3>
+            <pre class="action-tree"><code>E
+|-- T: print(9)
+`-- R
+    |-- - T: print(5), print(-)
+    `-- R
+        |-- + T: print(2), print(+)
+        `-- epsilon</code></pre>
+            <p class="keyline">Resultado impreso en postfijo: <code>9 5 - 2 +</code>.</p>
           </article>
         </div>
         <article class="band">
-          <h3>Idea central del bloque</h3>
-          <p>Un esquema de traducci&oacute;n convierte la gram&aacute;tica en un procedimiento ejecutable: cada producci&oacute;n no solo reconoce estructura, sino que dispara el efecto sem&aacute;ntico correspondiente.</p>
+          <h3>Lectura</h3>
+          <p>
+            El primer esquema muestra cada s&iacute;mbolo concreto de la gram&aacute;tica. El segundo compacta la misma idea
+            usando componentes l&eacute;xicos generales: <code>num</code> para los d&iacute;gitos y <code>opsuma</code> para
+            los operadores aditivos.
+          </p>
         </article>
+        
         <div class="tree-note combo-note">
           <strong>&Aacute;rbol de trabajo</strong>
           <p>Las acciones se sincronizan con el <span class="parse-tag">Parse Tree</span>, pero el resultado puede ser un valor, un <span class="ast-tag">AST</span>, una entrada de tabla de s&iacute;mbolos o c&oacute;digo intermedio.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-15c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ubicaci&oacute;n de acciones</p>
+          <h2>Una acci&oacute;n solo puede usar atributos que ya fueron calculados</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Solo sintetizados</h3>
+            <p>
+              El caso m&aacute;s sencillo ocurre cuando solo se necesitan atributos sintetizados: se coloca una
+              acci&oacute;n de asignaci&oacute;n al final del lado derecho.
+            </p>
+            <pre><code>T -&gt; T1 * F { T.val := T1.val * F.val }</code></pre>
+          </article>
+          <article class="card">
+            <h3>Cuando hay heredados y sintetizados</h3>
+            <ol class="clean-list">
+              <li>Un heredado de un s&iacute;mbolo del lado derecho debe calcularse antes de ese s&iacute;mbolo.</li>
+              <li>Ninguna acci&oacute;n debe usar un sintetizado de un s&iacute;mbolo que est&eacute; a su derecha.</li>
+              <li>Un sintetizado del lado izquierdo se calcula al final, cuando todas sus dependencias ya existen.</li>
+            </ol>
+          </article>
+        </div>
+        <article class="band compact-band">
+          <h3>Ejemplos r&aacute;pidos</h3>
+          <p><code>A -&gt; { B.h := f(A.h) } B C</code>: la acci&oacute;n va antes de <code>B</code> porque calcula <code>B.h</code>.</p>
+          <p><code>A -&gt; B { accion1 } C</code>: <code>accion1</code> no puede usar <code>C.s</code>, porque <code>C</code> todav&iacute;a no fue procesado.</p>
+          <p><code>A -&gt; B C { A.s := h(B.s, C.s) }</code>: la acci&oacute;n va al final porque depende de ambos sintetizados.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-15d">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">De DDS a esquema</p>
+          <h2>Las reglas L-atribuidas indican d&oacute;nde insertar cada acci&oacute;n sem&aacute;ntica</h2>
+        </div>
+        <div class="grid two wide-table-grid">
+          <article class="card table-card">
+            <h3>Definici&oacute;n con atributos por la izquierda</h3>
+            <table class="semantic-table">
+              <thead>
+                <tr>
+                  <th>Producci&oacute;n</th>
+                  <th>Reglas sem&aacute;nticas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>S -&gt; C</code></td>
+                  <td><code>C.tp := 10</code><br><code>S.al := C.al</code></td>
+                </tr>
+                <tr>
+                  <td><code>C -&gt; C1 C2</code></td>
+                  <td><code>C1.tp := C.tp</code><br><code>C2.tp := C.tp</code><br><code>C.al := max(C1.al, C2.al)</code></td>
+                </tr>
+                <tr>
+                  <td><code>C -&gt; C1 sub C2</code></td>
+                  <td><code>C1.tp := C.tp</code><br><code>C2.tp := contrae(C.tp)</code><br><code>C.al := desp(C1.al, C2.al)</code></td>
+                </tr>
+                <tr>
+                  <td><code>C -&gt; texto</code></td>
+                  <td><code>C.al := texto.a * C.tp</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="card">
+            <h3>Esquema de traducci&oacute;n resultante</h3>
+            <pre><code>S -&gt; { C.tp := 10 } C { S.al := C.al }
+
+C -&gt; { C1.tp := C.tp } C1
+     { C2.tp := C.tp } C2
+     { C.al := max(C1.al, C2.al) }
+
+C -&gt; { C1.tp := C.tp } C1 sub
+     { C2.tp := contrae(C.tp) } C2
+     { C.al := desp(C1.al, C2.al) }
+
+C -&gt; texto { C.al := texto.a * C.tp }</code></pre>
+          </article>
         </div>
       </div>
     </section>
