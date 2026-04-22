@@ -1674,42 +1674,58 @@ R.syn = R.in</code></pre>
     <section class="slide" id="slide-24">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Memoria</p>
-          <h2>Los valores viven solo mientras alguien los necesita</h2>
+          <p class="eyebrow">Consideraciones de espacio</p>
+          <h2>Los valores de atributos tambi&eacute;n necesitan administraci&oacute;n de memoria</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Duraci&oacute;n de un atributo</h3>
-            <p>Empieza cuando se calcula y termina cuando ya fueron evaluados todos los valores que dependen de &eacute;l.</p>
-            <p>Con el grafo de dependencias se puede estimar cu&aacute;ntos registros o espacios temporales hacen falta.</p>
-            <ol class="clean-list">
-              <li>Al nacer un atributo, se le asigna un registro disponible.</li>
-              <li>Cuando su duraci&oacute;n termina, ese registro vuelve al conjunto libre.</li>
-            </ol>
+            <h3>Qu&eacute; hay que considerar</h3>
+            <ul class="clean-list">
+              <li>Durante la compilaci&oacute;n se debe asignar espacio para guardar valores de atributos.</li>
+              <li>La informaci&oacute;n del grafo de dependencias ayuda a decidir cu&aacute;ndo reservar y cu&aacute;ndo liberar.</li>
+              <li>Se supone una secuencia de registros donde cada registro puede guardar cualquier valor de atributo.</li>
+            </ul>
           </article>
           <article class="card">
-            <h3>Optimizaci&oacute;n</h3>
-            <p>Las reglas de copia <code>b := c</code> permiten reutilizar registros y evitar copias innecesarias.</p>
+            <h3>Duraci&oacute;n</h3>
             <p>
-              Tratar las copias como caso especial reduce todav&iacute;a m&aacute;s el consumo de registros y evita
-              movimientos de datos que no aportan nada al c&aacute;lculo sem&aacute;ntico.
+              La <strong>duraci&oacute;n</strong> de un atributo empieza cuando se calcula por primera vez y termina cuando
+              ya se calcularon todos los atributos que dependen de &eacute;l.
             </p>
-            <p class="keyline">El compilador no guarda todo para siempre; recicla espacio en cuanto la dependencia termina.</p>
+            <p class="keyline">
+              Se ahorra espacio conservando el valor de un atributo solo durante su duraci&oacute;n.
+            </p>
           </article>
         </div>
-        <article class="band">
-          <h3>Resultado del m&eacute;todo</h3>
-          <p>
-            Recorrer los nodos del grafo en el orden de evaluaci&oacute;n permite usar el menor n&uacute;mero posible
-            de registros temporales durante la compilaci&oacute;n.
-          </p>
-          <p>
-            El problema ya no es solo calcular bien, sino calcular bien usando la menor cantidad posible de memoria intermedia.
-          </p>
-        </article>
         <div class="tree-note parse-note">
           <strong>&Aacute;rbol de trabajo</strong>
-          <p>Estas duraciones se calculan para atributos asociados al <span class="parse-tag">Parse Tree</span> o a su grafo de dependencias derivado.</p>
+          <p>La asignaci&oacute;n de espacio se calcula sobre el grafo de dependencias de un <span class="parse-tag">Parse Tree</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Asignaci&oacute;n de espacio</p>
+          <h2>Ejemplo: declaraciones de arrays y grafo de dependencias</h2>
+        </div>
+        <div class="grid two space-example-grid">
+          <article class="card table-card">
+            <h3>Fig. 5.42: paso del tipo</h3>
+            <figure class="book-image-figure">
+              <img src="./imagenes/Captura%20de%20pantalla%202026-04-22%20131734.png" alt="Fig. 5.42: paso del tipo a los identificadores en una declaraci&oacute;n">
+            </figure>
+          </article>
+          <article class="card">
+            <h3>Entrada <code>int x[8], y[4]</code></h3>
+            <figure class="book-image-figure wide-book-figure">
+              <img src="./imagenes/Captura%20de%20pantalla%202026-04-22%20131749.png" alt="Fig. 5.43: determinaci&oacute;n de las duraciones de los valores de atributos">
+            </figure>
+            <p class="figure-caption">
+              El grafo indica en qu&eacute; momento se crea cada valor y cu&aacute;ndo deja de ser necesario.
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -1717,53 +1733,120 @@ R.syn = R.in</code></pre>
     <section class="slide" id="slide-24b">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Ejemplo de reutilizaci&oacute;n</p>
-          <h2>Un mismo registro temporal puede servir para varios atributos en distintos momentos</h2>
+          <p class="eyebrow">Asignaci&oacute;n de espacio</p>
+          <h2>Las duraciones permiten devolver registros al conjunto disponible</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Secuencia posible</h3>
-            <table class="compare-table">
-              <thead>
-                <tr>
-                  <th>Etapa</th>
-                  <th>Atributos vivos</th>
-                  <th>Registros ocupados</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td><code>a.val</code>, <code>b.val</code></td>
-                  <td><code>R1</code>, <code>R2</code></td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td><code>t1 = a + b</code></td>
-                  <td><code>R1</code> reutilizado, <code>R2</code> libre</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td><code>c.val</code>, <code>t1</code></td>
-                  <td><code>R2</code> vuelve a usarse para <code>c</code></td>
-                </tr>
-              </tbody>
-            </table>
+            <h3>M&eacute;todo</h3>
+            <ul class="clean-list">
+              <li>Se consideran los nodos del grafo de dependencias en el orden en que deben evaluarse.</li>
+              <li>Inicialmente se tiene un conjunto de registros disponibles <code>r1, r2, ...</code>.</li>
+              <li>Si un atributo <code>b</code> se define por una regla <code>b := f(c1, c2, ..., ck)</code>, la duraci&oacute;n de los valores usados puede terminar al evaluar <code>b</code>.</li>
+              <li>Los registros de esos atributos se devuelven despu&eacute;s de evaluar <code>b</code>.</li>
+            </ul>
           </article>
           <article class="card">
-            <h3>Lectura del ejemplo</h3>
-            <ol class="clean-list">
-              <li>Un registro no est&aacute; atado para siempre a un atributo.</li>
-              <li>Cuando una dependencia termina, el registro se libera.</li>
-              <li>La siguiente subexpresi&oacute;n puede reutilizar ese mismo espacio.</li>
-              <li>La reutilizaci&oacute;n baja el costo sin cambiar el resultado del c&aacute;lculo.</li>
-            </ol>
+            <h3>Reutilizaci&oacute;n</h3>
+            <p>Siempre que sea posible, <code>b</code> se eval&uacute;a en un registro que ya guardaba alguno de <code>c1, c2, ..., ck</code>.</p>
+            <p class="keyline">As&iacute; el m&eacute;todo puede evaluar atributos usando el menor n&uacute;mero posible de registros.</p>
+            <figure class="book-image-figure">
+              <img src="./imagenes/Captura%20de%20pantalla%202026-04-22%20131749.png" alt="Fig. 5.43: grafo de dependencias y orden de evaluaci&oacute;n">
+            </figure>
           </article>
         </div>
-        <article class="band">
-          <h3>Conclusi&oacute;n pr&aacute;ctica</h3>
-          <p>Analizar la duraci&oacute;n de los atributos equivale a hacer administraci&oacute;n de recursos: el compilador decide cu&aacute;ndo reservar, reutilizar y liberar memoria temporal mientras eval&uacute;a la sem&aacute;ntica.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Algoritmo</p>
+          <h2>El registro se marca hasta que termina la duraci&oacute;n del valor que contiene</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Asignaci&oacute;n de registros</p>
+            <pre><code>for cada nodo m en m1, m2, ..., mn do
+  for cada nodo n cuya duracion termine con m do
+    marcar el registro de n
+
+  if algun registro r esta marcado then
+    desmarcar r
+    evaluar m en el registro r
+    devolver los registros marcados al conjunto disponible
+  else
+    evaluar m en un registro disponible
+
+  if la duracion de m ha terminado then
+    devolver el registro de m al conjunto disponible
+end</code></pre>
+          </article>
+          <article class="card">
+            <h3>Fig. 5.45: registros usados</h3>
+            <figure class="book-image-figure register-book-figure">
+              <img src="./imagenes/Captura%20de%20pantalla%202026-04-22%20131904.png" alt="Fig. 5.45: registros utilizados por los valores de atributos de la figura 5.43">
+            </figure>
+            <p>Se comienza evaluando el nodo <code>1</code> dentro del registro <code>r1</code>.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24d">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Evitar copias</p>
+          <h2>Las reglas de copia pueden tratarse como un caso especial</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Regla de copia</h3>
+            <p>
+              Una regla de copia tiene la forma <code>b := c</code>. Si el valor de <code>c</code> ya est&aacute; en
+              un registro <code>r</code>, entonces el valor de <code>b</code> tambi&eacute;n puede considerarse dentro de <code>r</code>.
+            </p>
+            <p>Como puede haber muchos atributos definidos por copia, conviene evitar copias expl&iacute;citas.</p>
+          </article>
+          <article class="card">
+            <h3>Clases de equivalencia</h3>
+            <ul class="clean-list">
+              <li>Los nodos con el mismo valor forman una clase de equivalencia.</li>
+              <li>Se guarda el valor de toda la clase en un solo registro.</li>
+              <li>Cuando se encuentra una regla de copia, el nodo nuevo se incorpora a la clase que ya tiene el valor.</li>
+            </ul>
+          </article>
+        </div>
+        <article class="band compact-band">
+          <h3>Idea pr&aacute;ctica</h3>
+          <p>Un registro se devuelve al conjunto disponible solo cuando terminan las duraciones de todos los nodos cuyos valores viven en ese registro.</p>
         </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-24e">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Evitar copias</p>
+          <h2>Las copias comparten registro hasta que termina toda la clase de equivalencia</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Fig. 5.46: con reglas de copia</h3>
+            <figure class="book-image-figure register-book-figure">
+              <img src="./imagenes/Captura%20de%20pantalla%202026-04-22%20131916.png" alt="Fig. 5.46: registros utilizados tomando en cuenta las reglas de copia">
+            </figure>
+          </article>
+          <article class="card">
+            <h3>Lectura de la figura</h3>
+            <p>Los signos <code>=</code> indican nodos definidos por una regla de copia.</p>
+            <p>Como <code>2</code> y <code>3</code> son copias de <code>1</code>, sus valores se toman del registro <code>r1</code>.</p>
+            <p>
+              Aunque la duraci&oacute;n de <code>3</code> termine al evaluar <code>5</code>, <code>r1</code> no vuelve al conjunto
+              disponible si todav&iacute;a no termin&oacute; la duraci&oacute;n de <code>2</code> en la misma clase de equivalencia.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
