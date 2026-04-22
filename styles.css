@@ -1082,6 +1082,80 @@ a {
   line-height: 1.45;
 }
 
+.recursive-example-grid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+.recursive-example-grid pre {
+  font-size: 0.76rem;
+  line-height: 1.34;
+}
+
+.dependency-grid {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+}
+
+.dependency-pair {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.dependency-mini {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(53, 106, 200, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dependency-mini p {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.dependency-mini span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.dep-line {
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.85rem;
+  background:
+    linear-gradient(160deg, rgba(17, 24, 39, 0.98), rgba(27, 35, 56, 0.98));
+  color: #f5f7ff;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  overflow-x: auto;
+}
+
+.fig-540 {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.65rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(53, 106, 200, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.fig-540 img {
+  display: block;
+  width: 100%;
+  max-height: 10.5rem;
+  object-fit: contain;
+  border-radius: 0.45rem;
+}
+
+.fig-540 figcaption {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
 .wide-table-grid {
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
 }
@@ -1228,6 +1302,8 @@ a {
   .reduction-flow,
   .example-grid,
   .scheme-example-grid,
+  .recursive-example-grid,
+  .dependency-grid,
   .wide-table-grid {
     grid-template-columns: 1fr;
   }

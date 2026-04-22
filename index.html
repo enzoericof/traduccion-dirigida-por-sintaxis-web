@@ -1415,43 +1415,58 @@ R.syn = R.in</code></pre>
     <section class="slide" id="slide-22">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Recorridos</p>
-          <h2>Funciones recursivas para evaluar atributos sobre un Parse Tree construido</h2>
+          <p class="eyebrow">Evaluadores recursivos</p>
+          <h2>Las funciones recursivas eval&uacute;an atributos recorriendo un &aacute;rbol ya construido</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Ventaja</h3>
-            <p>Ya no dependemos del orden estricto del parser. Podemos recorrer hijos en el orden que pida el grafo de dependencias.</p>
-            <p>
-              En particular, las DDS con atributos por la izquierda pueden implantarse recorriendo los hijos
-              exactamente en el orden en que aparecen en la producci&oacute;n.
-            </p>
-            <p class="keyline">El parser reconoce; el evaluador decide c&oacute;mo visitar el &aacute;rbol ya construido.</p>
+            <h3>Idea central</h3>
+            <ul class="clean-list">
+              <li>Se pueden construir funciones recursivas que eval&uacute;an atributos conforme recorren un &aacute;rbol de an&aacute;lisis sint&aacute;ctico.</li>
+              <li>La construcci&oacute;n generaliza las t&eacute;cnicas usadas en traducci&oacute;n predictiva.</li>
+              <li>Permite implantar DDS que no pueden evaluarse c&oacute;modamente al mismo tiempo que el an&aacute;lisis sint&aacute;ctico.</li>
+            </ul>
           </article>
-          <article class="code-card">
-            <p class="label">Esquema conceptual</p>
-            <pre><code>A(nodo, heredado) {
-  evaluar hijo izquierdo;
-  evaluar hijo derecho;
-  devolver sintetizado;
-}</code></pre>
-            <p>Sirve para DDS que no son c&oacute;modas de implantar directamente durante el an&aacute;lisis.</p>
+          <article class="card">
+            <h3>Una funci&oacute;n por no terminal</h3>
+            <ul class="clean-list">
+              <li>Se asocia una funci&oacute;n de traducci&oacute;n simple con cada no terminal.</li>
+              <li>La funci&oacute;n visita los hijos del nodo en un orden determinado por las producciones.</li>
+              <li>No siempre es necesario visitar los hijos estrictamente de izquierda a derecha.</li>
+            </ul>
           </article>
         </div>
-        <article class="band">
-          <h3>Otros recorridos</h3>
-          <p>
-            Si el Parse Tree ya existe expl&iacute;citamente, los hijos pueden visitarse en cualquier orden que respete
-            el grafo de dependencias. Eso permite evaluar DDS que no encajar&iacute;an c&oacute;modamente en una traducci&oacute;n inmediata.
-          </p>
-          <p>
-            El costo es que primero hay que construir y conservar el &aacute;rbol; la ganancia es una libertad mucho mayor
-            para elegir el orden de evaluaci&oacute;n.
-          </p>
-        </article>
         <div class="tree-note combo-note">
           <strong>&Aacute;rbol de trabajo</strong>
-          <p>Los evaluadores recursivos suelen definirse sobre un <span class="parse-tag">Parse Tree</span> expl&iacute;cito, aunque la misma idea tambi&eacute;n puede aplicarse a un <span class="ast-tag">AST</span> cuando la sem&aacute;ntica ya fue abstra&iacute;da.</p>
+          <p>El evaluador trabaja sobre un <span class="parse-tag">Parse Tree</span> expl&iacute;cito; si ya existe un <span class="ast-tag">AST</span>, la misma idea puede aplicarse sobre esa estructura.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-22a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Recorridos de izquierda a derecha</p>
+          <h2>Una DDS por la izquierda puede implantarse con funciones recursivas similares a las predictivas</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Construcci&oacute;n</h3>
+            <ul class="clean-list">
+              <li>Se invoca una funci&oacute;n recursiva en el nodo correspondiente al no terminal.</li>
+              <li>La funci&oacute;n observa la producci&oacute;n usada en ese nodo para determinar cu&aacute;les son sus hijos.</li>
+              <li>Los detalles son como en un traductor predictivo, salvo que ya no se decide por el s&iacute;mbolo de entrada.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Firma de la funci&oacute;n</h3>
+            <pre><code>A(n, heredados_de_A) -&gt; sintetizados_de_A</code></pre>
+            <p>
+              La funci&oacute;n de un no terminal <code>A</code> toma un nodo <code>n</code> y los valores heredados de
+              <code>A</code>; devuelve los atributos sintetizados de <code>A</code>.
+            </p>
+            <p class="keyline">En vez de elegir producci&oacute;n con lookahead, usa un <code>case</code> sobre la producci&oacute;n almacenada en el nodo.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -1459,27 +1474,189 @@ R.syn = R.in</code></pre>
     <section class="slide" id="slide-22b">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">&Oacute;rdenes de recorrido</p>
-          <h2>El tipo de atributo sugiere qu&eacute; recorrido del &aacute;rbol conviene usar</h2>
+          <p class="eyebrow">Ejemplo</p>
+          <h2>DDS para determinar tama&ntilde;o y altura de f&oacute;rmulas</h2>
         </div>
-        <div class="grid three">
-          <article class="mini-card">
-            <h3>Postorden</h3>
-            <p>Es el recorrido m&aacute;s natural para atributos sintetizados, porque primero visita hijos y despu&eacute;s calcula al padre.</p>
+        <div class="grid two recursive-example-grid">
+          <article class="card table-card">
+            <h3>Esquema de traducci&oacute;n</h3>
+            <table class="semantic-table">
+              <thead>
+                <tr>
+                  <th>Producci&oacute;n</th>
+                  <th>Reglas sem&aacute;nticas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>S -&gt; C</code></td>
+                  <td><code>C.tp := 10</code><br><code>S.al := C.al</code></td>
+                </tr>
+                <tr>
+                  <td><code>C -&gt; C1 C2</code></td>
+                  <td><code>C1.tp := C.tp</code><br><code>C2.tp := C.tp</code><br><code>C.al := max(C1.al, C2.al)</code></td>
+                </tr>
+                <tr>
+                  <td><code>C -&gt; C1 sub C2</code></td>
+                  <td><code>C1.tp := C.tp</code><br><code>C2.tp := contrae(C.tp)</code><br><code>C.al := desp(C1.al, C2.al)</code></td>
+                </tr>
+                <tr>
+                  <td><code>C -&gt; texto</code></td>
+                  <td><code>C.al := texto.a * C.tp</code></td>
+                </tr>
+              </tbody>
+            </table>
           </article>
-          <article class="mini-card">
-            <h3>Preorden o izquierda-derecha</h3>
-            <p>Resulta &uacute;til cuando un heredado debe llegar al hijo antes de seguir avanzando sobre el resto de la producci&oacute;n.</p>
-          </article>
-          <article class="mini-card">
-            <h3>Orden guiado por dependencias</h3>
-            <p>Si el grafo de dependencias est&aacute; disponible, el evaluador puede visitar nodos en el orden exacto que exija la sem&aacute;ntica.</p>
+          <article class="card">
+            <h3>Funci&oacute;n para <code>C</code></h3>
+            <pre><code>function C(n, tp)
+  case produccion(n) of
+    C -&gt; C1 C2:
+      al1 := C(hijo(n, 1), tp)
+      al2 := C(hijo(n, 2), tp)
+      return max(al1, al2)
+
+    C -&gt; C1 sub C2:
+      al1 := C(hijo(n, 1), tp)
+      al2 := C(hijo(n, 3), contrae(tp))
+      return desp(al1, al2)
+
+    C -&gt; texto:
+      return tp * texto.a
+  end</code></pre>
           </article>
         </div>
-        <article class="band">
-          <h3>Idea fuerte del bloque</h3>
-          <p>Cuando el &aacute;rbol ya est&aacute; construido, el compilador recupera una libertad que los parsers online no tienen: puede escoger el recorrido m&aacute;s conveniente en lugar de obedecer ciegamente el momento del reconocimiento.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-22c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Lectura del ejemplo</p>
+          <h2>La funci&oacute;n simula las reglas sem&aacute;nticas de cada producci&oacute;n</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Par&aacute;metros y retorno</h3>
+            <p>
+              La funci&oacute;n <code>C</code> toma como argumentos un nodo <code>n</code> y un valor que corresponde
+              a <code>C.tp</code> en ese nodo.
+            </p>
+            <p>Como resultado devuelve el valor correspondiente a <code>C.al</code>.</p>
+            <p class="keyline">El atributo heredado entra como par&aacute;metro; el sintetizado sale como valor de retorno.</p>
+          </article>
+          <article class="card">
+            <h3>Orden correcto</h3>
+            <p>La funci&oacute;n tiene un caso por cada producci&oacute;n con <code>C</code> a la izquierda.</p>
+            <p>El c&oacute;digo de cada caso reproduce las reglas sem&aacute;nticas asociadas con esa producci&oacute;n.</p>
+            <p>
+              El orden debe garantizar que los atributos heredados de un no terminal se calculen antes de llamar
+              a la funci&oacute;n correspondiente.
+            </p>
+          </article>
+        </div>
+        <article class="band compact-band">
+          <h3>Clave</h3>
+          <p>
+            El evaluador ya no consume tokens. Lee la producci&oacute;n guardada en el nodo del &aacute;rbol y elige el caso
+            recursivo que debe ejecutar.
+          </p>
         </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-22d">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Otros recorridos</p>
+          <h2>Con un &aacute;rbol expl&iacute;cito, los hijos pueden visitarse en cualquier orden necesario</h2>
+        </div>
+        <div class="grid two dependency-grid">
+          <article class="card table-card">
+            <h3>DDS no L-atribuida</h3>
+            <table class="semantic-table">
+              <thead>
+                <tr>
+                  <th>Producci&oacute;n</th>
+                  <th>Reglas sem&aacute;nticas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>A -&gt; L M</code></td>
+                  <td><code>L.h := l(A.h)</code><br><code>M.h := m(L.s)</code><br><code>A.s := f(M.s)</code></td>
+                </tr>
+                <tr>
+                  <td><code>A -&gt; Q R</code></td>
+                  <td><code>R.h := r(A.h)</code><br><code>Q.h := q(R.s)</code><br><code>A.s := f(Q.s)</code></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="figure-caption">
+              En <code>A -&gt; Q R</code>, <code>Q.h</code> depende de <code>R.s</code>, por eso hace falta visitar
+              primero el sub&aacute;rbol derecho.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Grafo de dependencias por producci&oacute;n</h3>
+            <div class="dependency-pair">
+              <div class="dependency-mini">
+                <p><code>A -&gt; L M</code></p>
+                <div class="dep-line">A.h -> L.h -> L.s -> M.h -> M.s -> A.s</div>
+                <span>flujo izquierda a derecha</span>
+              </div>
+              <div class="dependency-mini">
+                <p><code>A -&gt; Q R</code></p>
+                <div class="dep-line">A.h -> R.h -> R.s -> Q.h -> Q.s -> A.s</div>
+                <span>flujo derecha a izquierda</span>
+              </div>
+            </div>
+            <figure class="fig-540">
+              <img src="./imagenes/Captura%20de%20pantalla%202026-04-21%20193541.png" alt="Fig. 5.40: producciones y reglas sem&aacute;nticas para el no terminal A">
+              <figcaption>Fig. 5.40. Producciones y reglas sem&aacute;nticas para el no terminal <code>A</code>.</figcaption>
+            </figure>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-22e">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Funci&oacute;n para otros recorridos</p>
+          <h2>El evaluador puede cambiar el orden de visita seg&uacute;n la producci&oacute;n usada</h2>
+        </div>
+        <div class="grid two recursive-example-grid">
+          <article class="card">
+            <h3>Pseudoc&oacute;digo</h3>
+            <pre><code>function A(n, ah)
+  case produccion(n) of
+    A -&gt; L M:
+      lh := l(ah)
+      ls := L(hijo(n, 1), lh)
+      mh := m(ls)
+      ms := M(hijo(n, 2), mh)
+      return f(ms)
+
+    A -&gt; Q R:
+      rh := r(ah)
+      rs := R(hijo(n, 2), rh)
+      qh := q(rs)
+      qs := Q(hijo(n, 1), qh)
+      return f(qs)
+  end</code></pre>
+          </article>
+          <article class="card">
+            <h3>Lectura</h3>
+            <p><code>A</code> tiene un atributo heredado <code>h</code> y uno sintetizado <code>s</code>.</p>
+            <p>Las reglas asociadas con <code>A -&gt; L M</code> imponen dependencias de izquierda a derecha.</p>
+            <p>Las reglas asociadas con <code>A -&gt; Q R</code> imponen dependencias de derecha a izquierda.</p>
+            <p class="keyline">
+              Por eso la funci&oacute;n para <code>A</code> visita <code>L</code> antes que <code>M</code> en un caso,
+              y <code>R</code> antes que <code>Q</code> en el otro.
+            </p>
+          </article>
+        </div>
       </div>
     </section>
 
