@@ -1337,20 +1337,6 @@ a {
   overflow: hidden;
 }
 
-.card::after,
-.mini-card::after,
-.code-card::after,
-.band::after {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 5px;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgba(103, 183, 243, 0.95), rgba(47, 103, 199, 0.08));
-  opacity: 0.72;
-  pointer-events: none;
-}
-
 .card h3,
 .mini-card h3,
 .code-card h3,
