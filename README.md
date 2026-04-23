@@ -2,7 +2,7 @@
 
 Presentación web de la materia **Compiladores** sobre **Traducción Dirigida por la Sintaxis**.
 
-Total actual: **67 diapositivas**.
+Total actual: **73 diapositivas**.
 
 ## Qué cubre
 
@@ -18,17 +18,17 @@ La exposición sigue el capítulo 5 entre los subcapítulos `5.1` y `5.8`. El re
 | 5.3 | 18-22 | Evaluación ascendente de atributos sintetizados usando pila LR. |
 | 5.4 | 23-29 | Definiciones con atributos por la izquierda y esquemas de traducción. |
 | 5.5 | 30-48 | Traducción descendente, eliminación de recursión por la izquierda, `R.h`/`R.s`, forma general del libro y algoritmo 5.2 paso a paso. |
-| 5.6 | 49-51 | Evaluación ascendente de atributos heredados con marcadores. |
-| 5.7 | 52-58 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
-| 5.8 | 59-65 | Espacio para atributos, vida útil de valores, reutilización de registros y reglas de copia. |
-| Cierre | 66-67 | Resumen conceptual y bibliografía. |
+| 5.6 | 49-57 | Evaluación ascendente de atributos heredados: pila, marcadores, reglas de copia, algoritmo 5.3 y límites. |
+| 5.7 | 58-64 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
+| 5.8 | 65-71 | Espacio para atributos, vida útil de valores, reutilización de registros y reglas de copia. |
+| Cierre | 72-73 | Resumen conceptual y bibliografía. |
 
 ## Archivos principales
 
 - `index.html`: presentación principal.
 - `styles.css`: estilos visuales de las diapositivas.
 - `favicon.svg`: favicon de la pestaña.
-- `estructura-presentacion.md`: listado completo de las 67 diapositivas.
+- `estructura-presentacion.md`: listado completo de las 73 diapositivas.
 - `imagenes/`: capturas y figuras usadas en la presentación.
 - `generador-grafos-dds/`: programa auxiliar para cargar producciones/reglas y generar grafo de dependencias.
 

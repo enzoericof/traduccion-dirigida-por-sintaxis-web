@@ -498,16 +498,16 @@ L.her := T.tipo</code></pre>
             <article class="tree-panel parse-panel">
               <h3 class="parse-tag">Parse Tree de <code>a + b * c</code></h3>
               <pre class="tree-code">E
-├─ E
-│  └─ T
-│     └─ id(a)
-├─ +
-└─ T
-   ├─ T
-   │  └─ id(b)
-   ├─ *
-   └─ F
-      └─ id(c)</pre>
+â”œâ”€ E
+â”‚  â””â”€ T
+â”‚     â””â”€ id(a)
+â”œâ”€ +
+â””â”€ T
+   â”œâ”€ T
+   â”‚  â””â”€ id(b)
+   â”œâ”€ *
+   â””â”€ F
+      â””â”€ id(c)</pre>
             </article>
             <div class="tree-note parse-note">
               <strong>Parse Tree</strong>
@@ -582,7 +582,7 @@ E.nodo = new Nodo("+", E1.nodo, T.nodo)</code></pre>
           <article class="card figure-card">
             <h3>Fig. 5.10: <code>a - 4 + c</code></h3>
             <div class="figure-frame">
-              <img class="book-figure" src="./imagenes/fig-5-10-ast-a-4-c.png" alt="Figura 5.10: construcción del árbol sintáctico para a menos 4 más c">
+              <img class="book-figure" src="./imagenes/fig-5-10-ast-a-4-c.png" alt="Figura 5.10: construcciÃ³n del Ã¡rbol sintÃ¡ctico para a menos 4 mÃ¡s c">
             </div>
             <p class="figure-caption">El atributo <code>apn</code> va quedando asociado a la ra&iacute;z del sub&aacute;rbol construido en cada paso.</p>
           </article>
@@ -1795,73 +1795,223 @@ R -&gt; epsilon { R.s := R.h }</code></pre>
     <section class="slide" id="slide-20">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Heredados en LR</p>
-          <h2>La soluci&oacute;n cl&aacute;sica es usar marcadores y aprovechar la pila</h2>
+          <p class="eyebrow">Problema de 5.6</p>
+          <h2>Los sintetizados son naturales en LR; los heredados no</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Problema</h3>
-            <p>En an&aacute;lisis ascendente, cuando se necesita un heredado, todav&iacute;a puede no existir el nodo padre de forma expl&iacute;cita.</p>
-            <p>Eso impide pasar contexto del modo natural en que lo har&iacute;a una evaluaci&oacute;n top-down.</p>
+            <h3>Por qu&eacute; 5.3 era m&aacute;s simple</h3>
+            <p>Cuando un parser LR reduce una producci&oacute;n, ya tiene en la pila los s&iacute;mbolos del lado derecho y sus valores.</p>
+            <p>Por eso los atributos sintetizados se calculan de forma natural al momento de la reducci&oacute;n.</p>
+            <p class="keyline">La pila ya contiene la informaci&oacute;n que viene de los hijos.</p>
           </article>
-          <article class="card figure-card">
-            <h3>Fig. 5.35: uso del marcador</h3>
-            <div class="figure-frame">
-              <img class="book-figure" src="./imagenes/fig-5-35-marcador.png" alt="Figura 5.35: copiado de un valor de atributo a través de un marcador">
-            </div>
-            <p class="figure-caption">El marcador <code>M</code> permite copiar el valor heredado a una posici&oacute;n controlada de la derivaci&oacute;n.</p>
+          <article class="card">
+            <h3>Qu&eacute; cambia con heredados</h3>
+            <p>Un atributo heredado depende del contexto: del padre o de un hermano anterior, no solo de los hijos.</p>
+            <p>En an&aacute;lisis ascendente ese contexto no siempre existe como un padre expl&iacute;cito y disponible.</p>
+            <p class="keyline">5.6 estudia c&oacute;mo simular ese contexto usando la pila.</p>
           </article>
         </div>
-        <article class="band warning">
-          <h3>Conclusi&oacute;n t&eacute;cnica</h3>
-          <p>Los sintetizados son naturales en LR; los heredados requieren ingenier&iacute;a extra para recrear el contexto que a&uacute;n no est&aacute; armado.</p>
-          <p>
-            Para lograrlo, primero se eliminan las acciones intercaladas introduciendo no terminales marcadores
-            que derivan <code>epsilon</code> y permiten disparar las acciones en un punto controlado.
-          </p>
-          <p>
-            Luego el contexto heredado se lee y se escribe sobre la pila: una reducci&oacute;n previa deja listo el
-            valor que una producci&oacute;n posterior necesitar&aacute; como heredado.
-          </p>
+        <article class="band">
+          <h3>Objetivo de la secci&oacute;n</h3>
+          <p>Generalizar la traducci&oacute;n ascendente para poder manejar atributos heredados en definiciones con atributos por la izquierda.</p>
         </article>
         <div class="tree-note parse-note">
           <strong>&Aacute;rbol de trabajo</strong>
-          <p>Todo este bloque sigue tratando atributos del <span class="parse-tag">Parse Tree</span>; el problema aqu&iacute; es c&oacute;mo simular el contexto del padre en un parser LR.</p>
+          <p>Seguimos trabajando sobre el <span class="parse-tag">Parse Tree</span>. El heredado no baja por el &aacute;rbol de forma directa: debe representarse con valores colocados en la pila.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Primera idea</p>
+          <h2>Las acciones intercaladas se convierten en reducciones normales</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Antes</h3>
+            <pre><code>R -&gt; + T { acci&oacute;n } R</code></pre>
+            <p>En un esquema de traducci&oacute;n las acciones pueden quedar en medio del lado derecho.</p>
+            <p>Pero un parser LR ejecuta acciones c&oacute;modamente al reducir, o sea, al final de una producci&oacute;n.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Despu&eacute;s</p>
+            <pre><code>R -&gt; + T M R
+M -&gt; epsilon { acci&oacute;n }</code></pre>
+            <p>El marcador <code>M</code> deriva a <code>epsilon</code> y permite que la acci&oacute;n ocurra como parte de una reducci&oacute;n normal.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Idea clave</h3>
+          <p>El marcador no cambia la cadena reconocida; solo reubica el momento en que la acci&oacute;n sem&aacute;ntica se ejecuta.</p>
+        </article>
       </div>
     </section>
 
     <section class="slide" id="slide-20b">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Interpretaci&oacute;n de la pila</p>
-          <h2>El marcador no agrega significado nuevo: solo adelanta el momento de ejecutar la acci&oacute;n</h2>
+          <p class="eyebrow">Reglas de copia</p>
+          <h2>Un heredado puede reutilizar un sintetizado que ya est&aacute; en la pila</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Qu&eacute; hace realmente</h3>
-            <ol class="clean-list">
-              <li>Se reduce a <code>epsilon</code>, as&iacute; que no cambia la cadena reconocida.</li>
-              <li>Ejecuta una acci&oacute;n justo cuando el contexto necesario ya est&aacute; en la pila.</li>
-              <li>Guarda ese contexto en una posici&oacute;n accesible para la reducci&oacute;n siguiente.</li>
-              <li>Permite que un heredado llegue a tiempo a un s&iacute;mbolo reconocido despu&eacute;s.</li>
-            </ol>
+            <h3>Caso b&aacute;sico</h3>
+            <pre><code>A -&gt; X Y
+Y.h := X.s</code></pre>
+            <p>Si <code>X.s</code> ya fue calculado, ese valor queda en la pila antes de que termine el procesamiento de <code>Y</code>.</p>
+            <p>Entonces <code>Y.h</code> puede simularse leyendo ese mismo valor desde una posici&oacute;n conocida.</p>
           </article>
           <article class="card figure-card">
             <h3>Fig. 5.33: pila del analizador</h3>
             <div class="figure-frame">
-              <img class="book-figure" src="./imagenes/fig-5-33-pila-l-her.png" alt="Figura 5.33: siempre que se reduce un lado derecho para L, T está justo abajo del lado derecho">
+              <img class="book-figure" src="./imagenes/fig-5-33-pila-l-her.png" alt="Figura 5.33: siempre que se reduce un lado derecho para L, T est&aacute; justo abajo del lado derecho">
             </div>
-            <p class="figure-caption">La pila revela por qu&eacute; <code>T</code> queda accesible justo debajo del lado derecho cuando se reduce un caso de <code>L</code>.</p>
+            <p class="figure-caption">La pila muestra por qu&eacute; cierto sintetizado previo puede reutilizarse como heredado.</p>
           </article>
         </div>
         <div class="tree-note parse-note">
           <strong>&Aacute;rbol de trabajo</strong>
-          <p>El <span class="parse-tag">Parse Tree</span> reconocido no cambia en esencia; lo que cambia es la estrategia usada para disparar las acciones sem&aacute;nticas en el momento oportuno.</p>
+          <p>El <span class="parse-tag">Parse Tree</span> no cambia; cambia la forma de obtener el heredado. En vez de bajar por el &aacute;rbol, se recupera desde la pila.</p>
         </div>
       </div>
     </section>
 
+    <section class="slide" id="slide-20c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Ejemplo t&iacute;pico</p>
+          <h2>En declaraciones, el tipo puede seguir disponible debajo de la lista</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Fig. 5.5: tipo heredado por la lista</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-5-l-her.png" alt="Figura 5.5: el atributo heredado de L recibe el tipo de T">
+            </div>
+            <p class="figure-caption"><code>L.her</code> recibe el tipo calculado previamente por <code>T.tipo</code>.</p>
+          </article>
+          <article class="card">
+            <h3>Lectura del caso</h3>
+            <p>En una declaraci&oacute;n como <code>real p, q, r</code>, el tipo se reconoce primero y queda registrado en la pila.</p>
+            <p>Despu&eacute;s, al reducir la lista de identificadores, ese tipo todav&iacute;a puede estar accesible desde una posici&oacute;n conocida.</p>
+            <p class="keyline">A veces el heredado no se transmite expl&iacute;citamente: se reutiliza un valor ya guardado.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20d">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Cuando la pila no alcanza</p>
+          <h2>El problema aparece si la posici&oacute;n del heredado no es fija</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Situaci&oacute;n ambigua</h3>
+            <p>Puede pasar que un valor como <code>A.s</code> deba alimentar a <code>C.h</code>, pero entre ambos aparezca o no un s&iacute;mbolo intermedio.</p>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/Captura de pantalla 2026-04-23 142946.png" alt="Ejemplo del libro donde C.h hereda A.s pero la posici&oacute;n del valor puede variar en la pila">
+            </div>
+            <p class="figure-caption">En ambas producciones, <code>C.h := A.s</code>, pero la distancia entre <code>A</code> y <code>C</code> no es la misma.</p>
+            <p>Entonces, al reducir <code>C</code>, el valor podr&iacute;a estar en posiciones distintas de la pila.</p>
+            <pre><code>val[tope - 1]
+o
+val[tope - 2]</code></pre>
+          </article>
+          <article class="card">
+            <h3>Por qu&eacute; eso complica</h3>
+            <p>La acci&oacute;n sem&aacute;ntica necesita saber exactamente desde d&oacute;nde leer.</p>
+            <p>Si la posici&oacute;n cambia seg&uacute;n la derivaci&oacute;n, ya no hay una implementaci&oacute;n uniforme para esa reducci&oacute;n.</p>
+            <p class="keyline">Ah&iacute; entran los marcadores para fijar la posici&oacute;n del valor heredado.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20e">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Marcadores</p>
+          <h2>El marcador simula el heredado dejando el valor donde se necesita</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Fig. 5.35: uso del marcador</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="./imagenes/fig-5-35-marcador.png" alt="Figura 5.35: copiado de un valor de atributo a trav&eacute;s de un marcador">
+            </div>
+            <p class="figure-caption">El marcador <code>M</code> permite copiar o transformar un valor y dejarlo en una posici&oacute;n controlada.</p>
+          </article>
+          <article class="card">
+            <h3>Dos variantes</h3>
+            <ol class="clean-list">
+              <li><strong>Regla de copia:</strong> si se quiere <code>C.h := A.s</code>, el marcador copia ese valor.</li>
+              <li><strong>Regla con funci&oacute;n:</strong> si se quiere <code>C.h := f(A.s)</code>, el marcador calcula <code>f(A.s)</code> y deja ese resultado.</li>
+            </ol>
+            <p class="keyline">El heredado no baja por el &aacute;rbol: se simula reubicando el valor en la pila.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20f">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Algoritmo 5.3</p>
+          <h2>Insertar marcadores sistem&aacute;ticamente para preparar cada heredado</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Forma conceptual</p>
+            <pre><code>A -&gt; X1 X2 ... Xn
+
+se transforma en
+
+A -&gt; M1 X1 M2 X2 ... Mn Xn</code></pre>
+            <p>Cada <code>Mi</code> se usa para preparar el atributo heredado de <code>Xi</code>.</p>
+          </article>
+          <article class="card">
+            <h3>Invariante importante</h3>
+            <p>El algoritmo busca que el heredado de <code>Xi</code> quede justo debajo de <code>Xi</code> en la pila.</p>
+            <p>As&iacute;, cuando llegue la reducci&oacute;n correspondiente, la acci&oacute;n sabe exactamente de d&oacute;nde tomar el contexto heredado.</p>
+            <p class="keyline">Los sintetizados siguen asociados a sus s&iacute;mbolos; los heredados quedan preparados por los marcadores.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-20g">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Alcance y l&iacute;mites</p>
+          <h2>El m&eacute;todo es potente, pero no funciona para todo</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>D&oacute;nde funciona bien</h3>
+            <ol class="clean-list">
+              <li>En definiciones con atributos por la izquierda basadas en gram&aacute;ticas LL(1).</li>
+              <li>En muchas definiciones basadas en gram&aacute;ticas LR(1).</li>
+              <li>Cuando insertar marcadores no introduce conflictos sint&aacute;cticos nuevos.</li>
+            </ol>
+          </article>
+          <article class="card">
+            <h3>L&iacute;mite pr&aacute;ctico</h3>
+            <p>En algunas gram&aacute;ticas LR(1), los marcadores pueden crear conflictos de an&aacute;lisis sint&aacute;ctico.</p>
+            <p>En esos casos, a veces conviene reestructurar la gram&aacute;tica para que la traducci&oacute;n sea m&aacute;s natural.</p>
+            <p class="keyline">No siempre se fuerza el heredado en ascendente; a veces se cambia la gram&aacute;tica.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Resumen ultra claro de 5.6</h3>
+          <p>La estrategia consiste en usar la pila del parser, reglas de copia y no terminales marcadores que derivan a <code>epsilon</code> para simular atributos heredados y ejecutar las acciones en el momento correcto.</p>
+        </article>
+      </div>
+    </section>
     <section class="slide section-divider" id="slide-21">
       <div class="slide-shell divider-shell">
         <p class="big-number">5.7</p>

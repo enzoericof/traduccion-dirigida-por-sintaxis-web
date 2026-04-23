@@ -1354,6 +1354,10 @@ a {
   max-height: 15rem;
 }
 
+#slide-20d .book-figure {
+  max-height: 8.5rem;
+}
+
 .section-divider .slide-shell,
 .divider-shell {
   display: flex;

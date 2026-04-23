@@ -2,7 +2,7 @@
 
 Presentación de **Compiladores** sobre **Traducción Dirigida por la Sintaxis**.
 
-Total actual: **67 diapositivas**.
+Total actual: **73 diapositivas**.
 
 ## Mapa de diapositivas
 
@@ -57,24 +57,30 @@ Total actual: **67 diapositivas**.
 | 47 | `slide-17m` | Caso acción semántica | Si aparece una acción semántica, se ejecuta en ese lugar |
 | 48 | `slide-17n` | Resumen del algoritmo | El traductor predictivo mezcla reconocimiento sintáctico y evaluación semántica |
 | 49 | `slide-19` | 5.6 | Evaluación ascendente de atributos heredados |
-| 50 | `slide-20` | Heredados en LR | La solución clásica es usar marcadores y aprovechar la pila |
-| 51 | `slide-20b` | Interpretación de la pila | El marcador no agrega significado nuevo: solo adelanta el momento de ejecutar la acción |
-| 52 | `slide-21` | 5.7 | Evaluadores recursivos |
-| 53 | `slide-22` | Evaluadores recursivos | Las funciones recursivas evalúan atributos recorriendo un árbol ya construido |
-| 54 | `slide-22a` | Recorridos de izquierda a derecha | Una DDS por la izquierda puede implantarse con funciones recursivas similares a las predictivas |
-| 55 | `slide-22b` | Ejemplo | DDS para determinar tamaño y altura de fórmulas |
-| 56 | `slide-22c` | Lectura del ejemplo | La función simula las reglas semánticas de cada producción |
-| 57 | `slide-22d` | Otros recorridos | Con un árbol explícito, los hijos pueden visitarse en cualquier orden necesario |
-| 58 | `slide-22e` | Función para otros recorridos | El evaluador puede cambiar el orden de visita según la producción usada |
-| 59 | `slide-23` | 5.8 | Consideraciones de espacio para valores de atributos |
-| 60 | `slide-24` | Consideraciones de espacio | Los valores de atributos también necesitan administración de memoria |
-| 61 | `slide-24a` | Asignación de espacio | Ejemplo: declaraciones de arrays y grafo de dependencias |
-| 62 | `slide-24b` | Asignación de espacio | Las duraciones permiten devolver registros al conjunto disponible |
-| 63 | `slide-24c` | Algoritmo | El registro se marca hasta que termina la duración del valor que contiene |
-| 64 | `slide-24d` | Evitar copias | Las reglas de copia pueden tratarse como un caso especial |
-| 65 | `slide-24e` | Evitar copias | Las copias comparten registro hasta que termina toda la clase de equivalencia |
-| 66 | `slide-25` | Resumen | Síntesis del capítulo |
-| 67 | `slide-26` | Bibliografía | Fuentes bibliográficas |
+| 50 | `slide-20` | Problema de 5.6 | Los sintetizados son naturales en LR; los heredados no |
+| 51 | `slide-20a` | Primera idea | Las acciones intercaladas se convierten en reducciones normales |
+| 52 | `slide-20b` | Reglas de copia | Un heredado puede reutilizar un sintetizado que ya está en la pila |
+| 53 | `slide-20c` | Ejemplo típico | En declaraciones, el tipo puede seguir disponible debajo de la lista |
+| 54 | `slide-20d` | Cuando la pila no alcanza | El problema aparece si la posición del heredado no es fija |
+| 55 | `slide-20e` | Marcadores | El marcador simula el heredado dejando el valor donde se necesita |
+| 56 | `slide-20f` | Algoritmo 5.3 | Insertar marcadores sistemáticamente para preparar cada heredado |
+| 57 | `slide-20g` | Alcance y límites | El método es potente, pero no funciona para todo |
+| 58 | `slide-21` | 5.7 | Evaluadores recursivos |
+| 59 | `slide-22` | Evaluadores recursivos | Las funciones recursivas evalúan atributos recorriendo un árbol ya construido |
+| 60 | `slide-22a` | Recorridos de izquierda a derecha | Una DDS por la izquierda puede implantarse con funciones recursivas similares a las predictivas |
+| 61 | `slide-22b` | Ejemplo | DDS para determinar tamaño y altura de fórmulas |
+| 62 | `slide-22c` | Lectura del ejemplo | La función simula las reglas semánticas de cada producción |
+| 63 | `slide-22d` | Otros recorridos | Con un árbol explícito, los hijos pueden visitarse en cualquier orden necesario |
+| 64 | `slide-22e` | Función para otros recorridos | El evaluador puede cambiar el orden de visita según la producción usada |
+| 65 | `slide-23` | 5.8 | Consideraciones de espacio para valores de atributos |
+| 66 | `slide-24` | Consideraciones de espacio | Los valores de atributos también necesitan administración de memoria |
+| 67 | `slide-24a` | Asignación de espacio | Ejemplo: declaraciones de arrays y grafo de dependencias |
+| 68 | `slide-24b` | Asignación de espacio | Las duraciones permiten devolver registros al conjunto disponible |
+| 69 | `slide-24c` | Algoritmo | El registro se marca hasta que termina la duración del valor que contiene |
+| 70 | `slide-24d` | Evitar copias | Las reglas de copia pueden tratarse como un caso especial |
+| 71 | `slide-24e` | Evitar copias | Las copias comparten registro hasta que termina toda la clase de equivalencia |
+| 72 | `slide-25` | Resumen | Síntesis del capítulo |
+| 73 | `slide-26` | Bibliografía | Fuentes bibliográficas |
 
 ## Resumen por bloques
 
@@ -86,7 +92,7 @@ Total actual: **67 diapositivas**.
 | 5.3 | 18-22 | Evaluación ascendente de atributos sintetizados con pila LR y reducciones. |
 | 5.4 | 23-29 | Definiciones con atributos por la izquierda y esquemas de traducción. |
 | 5.5 | 30-48 | Traducción descendente, eliminación de recursión por la izquierda, `R.h`/`R.s`, forma general del libro y algoritmo 5.2 paso a paso. |
-| 5.6 | 49-51 | Evaluación ascendente de atributos heredados con marcadores y pila. |
-| 5.7 | 52-58 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
-| 5.8 | 59-65 | Consideraciones de espacio, vida útil de atributos, reutilización de registros y reglas de copia. |
-| Cierre | 66-67 | Síntesis conceptual y bibliografía. |
+| 5.6 | 49-57 | Evaluación ascendente de atributos heredados: pila, marcadores, reglas de copia, algoritmo 5.3 y límites. |
+| 5.7 | 58-64 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
+| 5.8 | 65-71 | Consideraciones de espacio, vida útil de atributos, reutilización de registros y reglas de copia. |
+| Cierre | 72-73 | Síntesis conceptual y bibliografía. |
