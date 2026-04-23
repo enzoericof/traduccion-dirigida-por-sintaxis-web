@@ -2,7 +2,7 @@
 
 Presentación web de la materia **Compiladores** sobre **Traducción Dirigida por la Sintaxis**.
 
-Total actual: **48 diapositivas**.
+Total actual: **67 diapositivas**.
 
 ## Qué cubre
 
@@ -17,18 +17,18 @@ La exposición sigue el capítulo 5 entre los subcapítulos `5.1` y `5.8`. El re
 | 5.2 | 11-17 | Parse Tree vs AST, construcción con `haznodo`/`hazhoja`, atributo `apn` y GDA. |
 | 5.3 | 18-22 | Evaluación ascendente de atributos sintetizados usando pila LR. |
 | 5.4 | 23-29 | Definiciones con atributos por la izquierda y esquemas de traducción. |
-| 5.5 | 30-33 | Traducción descendente, recursión por la izquierda y traductor predictivo. |
-| 5.6 | 34-36 | Evaluación ascendente de atributos heredados con marcadores. |
-| 5.7 | 37-43 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
-| 5.8 | 44-46 | Espacio para atributos, vida útil de valores y reutilización de registros. |
-| Cierre | 47-48 | Resumen conceptual y bibliografía. |
+| 5.5 | 30-48 | Traducción descendente, eliminación de recursión por la izquierda, `R.h`/`R.s`, forma general del libro y algoritmo 5.2 paso a paso. |
+| 5.6 | 49-51 | Evaluación ascendente de atributos heredados con marcadores. |
+| 5.7 | 52-58 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
+| 5.8 | 59-65 | Espacio para atributos, vida útil de valores, reutilización de registros y reglas de copia. |
+| Cierre | 66-67 | Resumen conceptual y bibliografía. |
 
 ## Archivos principales
 
 - `index.html`: presentación principal.
 - `styles.css`: estilos visuales de las diapositivas.
 - `favicon.svg`: favicon de la pestaña.
-- `estructura-presentacion.md`: listado completo de las 48 diapositivas.
+- `estructura-presentacion.md`: listado completo de las 67 diapositivas.
 - `imagenes/`: capturas y figuras usadas en la presentación.
 - `generador-grafos-dds/`: programa auxiliar para cargar producciones/reglas y generar grafo de dependencias.
 

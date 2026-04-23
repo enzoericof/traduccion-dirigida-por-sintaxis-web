@@ -1323,6 +1323,37 @@ a {
   line-height: 1.42;
 }
 
+#slide-17a .book-figure {
+  max-height: 15.5rem;
+}
+
+#slide-17c .tree-rule {
+  align-content: center;
+}
+
+#slide-17c .tree-rule pre {
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.algorithm-grid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+#slide-17f .book-figure {
+  max-height: 31rem;
+}
+
+#slide-17g .book-figure,
+#slide-17h .book-figure,
+#slide-17i .book-figure {
+  max-height: 10rem;
+}
+
+#slide-17j .book-figure {
+  max-height: 15rem;
+}
+
 .section-divider .slide-shell,
 .divider-shell {
   display: flex;

@@ -1206,40 +1206,70 @@ C -&gt; texto { C.al := texto.a * C.tp }</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">LL y recursi&oacute;n</p>
-          <h2>Eliminar recursi&oacute;n por la izquierda para poder traducir en descenso</h2>
+          <h2>Por qu&eacute; importa eliminar recursi&oacute;n por la izquierda en esquemas de traducci&oacute;n</h2>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>Problema</h3>
+            <h3>Problema sint&aacute;ctico</h3>
             <p>Muchas gram&aacute;ticas de expresiones son naturalmente recursivas por la izquierda, pero un parser predictivo no puede manejarlas directamente.</p>
             <p>
-              Al eliminar esa recursi&oacute;n, tambi&eacute;n hay que reubicar la informaci&oacute;n heredada y sintetizada
-              que antes viajaba por la forma original de la producci&oacute;n.
+              En una producci&oacute;n como <code>E -&gt; E - T</code>, el primer s&iacute;mbolo que debe reconocer <code>E</code>
+              vuelve a ser <code>E</code>. En descenso recursivo, eso produce una llamada inmediata a la misma funci&oacute;n.
             </p>
+            <p class="keyline">El parser se queda intentando reconocer <code>E</code> antes de consumir ning&uacute;n token.</p>
           </article>
           <article class="card">
-            <h3>Soluci&oacute;n</h3>
-            <p>Se transforma la gram&aacute;tica y tambi&eacute;n el esquema de traducci&oacute;n para conservar el mismo resultado sem&aacute;ntico.</p>
+            <h3>Problema sem&aacute;ntico</h3>
+            <p>En un esquema de traducci&oacute;n no basta con cambiar la gram&aacute;tica.</p>
             <p>
-              El objetivo es que el nuevo esquema produzca exactamente el mismo significado que la definici&oacute;n original,
-              aunque el parser procese la entrada con otra estructura.
+              Las acciones sem&aacute;nticas estaban ubicadas en producciones que desaparecen o cambian de forma.
+              Por eso hay que reconstruir c&oacute;mo viajan los atributos.
             </p>
-            <p class="keyline">No solo cambia la forma sint&aacute;ctica; hay que preservar el orden correcto de las acciones.</p>
+            <p class="keyline">La nueva gram&aacute;tica debe reconocer lo mismo y calcular el mismo valor.</p>
           </article>
         </div>
         <div class="grid two">
           <article class="code-card">
-            <p class="label">Antes</p>
-            <pre><code>E -&gt; E + T | T</code></pre>
-            <p>La recursi&oacute;n aparece al inicio de la producci&oacute;n y por eso el parser predictivo entrar&iacute;a en un ciclo inmediato.</p>
+            <p class="label">Con recursi&oacute;n por la izquierda</p>
+            <pre><code>E -&gt; E + T | E - T | T</code></pre>
+            <p>La asociatividad por la izquierda queda expresada de forma natural, pero no sirve directamente para un parser descendente.</p>
           </article>
           <article class="code-card">
-            <p class="label">Despu&eacute;s</p>
+            <p class="label">Sin recursi&oacute;n por la izquierda</p>
             <pre><code>E -&gt; T R
-R -&gt; + T R | epsilon</code></pre>
-            <p>La recursi&oacute;n se desplaza a un no terminal auxiliar que ya no impide el an&aacute;lisis descendente.</p>
+R -&gt; + T R | - T R | epsilon</code></pre>
+            <p>La repetici&oacute;n de operadores pasa a una cola <code>R</code>, que puede procesarse de izquierda a derecha.</p>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17a">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Esquema original y transformado</p>
+          <h2>La transformaci&oacute;n cambia la forma, no el significado</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Fig. 5.24: esquema original</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Captura%20de%20pantalla%202026-04-23%20081214.png" alt="Figura 5.24: esquema de traducci&oacute;n con gram&aacute;tica recursiva por la izquierda">
+            </div>
+            <p>Las producciones <code>E -&gt; E + T</code> y <code>E -&gt; E - T</code> calculan <code>E.val</code> usando el valor ya acumulado en <code>E1.val</code>.</p>
+          </article>
+          <article class="card figure-card">
+            <h3>Fig. 5.25: esquema transformado</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Captura%20de%20pantalla%202026-04-23%20081249.png" alt="Figura 5.25: esquema de traducci&oacute;n transformado con gram&aacute;tica recursiva por la derecha">
+            </div>
+            <p>El no terminal <code>R</code> recibe el acumulado en <code>R.h</code> y devuelve el resultado final en <code>R.s</code>.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Idea central</h3>
+          <p>Antes, el acumulado estaba representado por la propia recursi&oacute;n de <code>E</code>. Despu&eacute;s, ese acumulado se vuelve expl&iacute;cito mediante el atributo heredado <code>R.h</code>.</p>
+        </article>
       </div>
     </section>
 
@@ -1247,27 +1277,34 @@ R -&gt; + T R | epsilon</code></pre>
       <div class="slide-shell">
         <div class="section-heading">
           <p class="eyebrow">Conservaci&oacute;n sem&aacute;ntica</p>
-          <h2>La gram&aacute;tica cambia, pero el significado de la expresi&oacute;n debe seguir siendo el mismo</h2>
+          <h2>Paso a paso: c&oacute;mo se reconstruye la sem&aacute;ntica del esquema</h2>
         </div>
-        <div class="grid two">
+        <div class="grid two recursive-example-grid">
           <article class="code-card">
-            <p class="label">Acumulador heredado</p>
+            <p class="label">Esquema transformado</p>
             <pre><code>E -&gt; T R
-R.in = T.val
+R.h := T.val
+E.val := R.s
 
 R -&gt; + T R1
-R1.in = R.in + T.val
+R1.h := R.h + T.val
+R.s := R1.s
+
+R -&gt; - T R1
+R1.h := R.h - T.val
+R.s := R1.s
 
 R -&gt; epsilon
-R.syn = R.in</code></pre>
+R.s := R.h</code></pre>
           </article>
           <article class="card">
             <h3>Lectura del mecanismo</h3>
             <ol class="clean-list">
-              <li><code>T</code> calcula el primer valor.</li>
-              <li><code>R.in</code> lo recibe como acumulador parcial.</li>
-              <li>Cada nueva suma actualiza el heredado.</li>
-              <li>Cuando aparece <code>epsilon</code>, el resultado sintetizado final coincide con el acumulado.</li>
+              <li><code>T</code> calcula el primer t&eacute;rmino.</li>
+              <li><code>R.h</code> recibe ese valor como acumulado inicial.</li>
+              <li>Cada operador <code>+</code> o <code>-</code> actualiza el acumulado antes de continuar con otro <code>R</code>.</li>
+              <li>Cuando aparece <code>epsilon</code>, ya no hay m&aacute;s cola y el acumulado se convierte en <code>R.s</code>.</li>
+              <li>Finalmente, <code>E.val</code> toma el valor sintetizado que devuelve <code>R</code>.</li>
             </ol>
           </article>
         </div>
@@ -1278,46 +1315,469 @@ R.syn = R.in</code></pre>
       </div>
     </section>
 
-    <section class="slide" id="slide-18">
+    <section class="slide" id="slide-17b1">
       <div class="slide-shell">
         <div class="section-heading">
-          <p class="eyebrow">Traductor predictivo</p>
-          <h2>En descenso recursivo, los heredados encajan de forma natural</h2>
+          <p class="eyebrow">Paso 1</p>
+          <h2>Separar el primer t&eacute;rmino de la cola de operaciones</h2>
         </div>
         <div class="grid two">
-          <article class="card">
-            <h3>Implementaci&oacute;n</h3>
-            <p>Cada no terminal se vuelve una funci&oacute;n. Sus par&aacute;metros representan atributos heredados y su retorno representa atributos sintetizados.</p>
-            <p>
-              Adem&aacute;s, los atributos l&eacute;xicos del token reconocido se guardan en variables y luego se usan
-              dentro de las funciones correspondientes.
-            </p>
-            <p class="keyline">La firma de la funci&oacute;n ya anticipa qu&eacute; contexto entra y qu&eacute; resultado sale.</p>
+          <article class="code-card">
+            <p class="label">Antes</p>
+            <pre><code>E -&gt; E + T
+E -&gt; E - T
+E -&gt; T</code></pre>
+            <p>El primer s&iacute;mbolo de las dos primeras producciones vuelve a ser <code>E</code>. Ah&iacute; est&aacute; la recursi&oacute;n por la izquierda.</p>
           </article>
           <article class="code-card">
-            <p class="label">Esqueleto del traductor</p>
-            <pre><code>E() {
-  T();
-  R(h);
-}</code></pre>
-            <p>La traducci&oacute;n se va haciendo mientras se recorre el <span class="parse-tag">Parse Tree</span> de arriba hacia abajo.</p>
+            <p class="label">Despu&eacute;s</p>
+            <pre><code>E -&gt; T R
+R -&gt; + T R
+R -&gt; - T R
+R -&gt; epsilon</code></pre>
+            <p><code>E</code> reconoce el primer t&eacute;rmino y <code>R</code> representa todo lo que puede venir despu&eacute;s.</p>
           </article>
         </div>
         <article class="band">
-          <h3>Pasos generales</h3>
-          <p>
-            Para construir el traductor predictivo se transforman los heredados en par&aacute;metros, los sintetizados
-            en valores de retorno y las acciones sem&aacute;nticas se ubican en el punto exacto donde sus dependencias ya existen.
-          </p>
-          <p>
-            En una implementaci&oacute;n real, tambi&eacute;n se comprueban tokens esperados, se consumen lexemas del scanner
-            y se actualizan estructuras auxiliares como la tabla de s&iacute;mbolos o el AST en construcci&oacute;n.
-          </p>
+          <h3>Idea informal</h3>
+          <p>La expresi&oacute;n deja de verse como "una expresi&oacute;n menos un t&eacute;rmino" y pasa a verse como "un primer t&eacute;rmino seguido de una cola de sumas o restas".</p>
         </article>
-        <div class="tree-note combo-note">
-          <strong>&Aacute;rbol de trabajo</strong>
-          <p>En descenso recursivo, el recorrido sigue el <span class="parse-tag">Parse Tree</span>; durante ese recorrido la DDS puede construir un <span class="ast-tag">AST</span>.</p>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17b2">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Paso 2</p>
+          <h2>Agregar <code>R.h</code> y <code>R.s</code> para no perder el valor acumulado</h2>
         </div>
+        <div class="grid two">
+          <article class="card">
+            <h3><code>R.h</code>: acumulador que entra</h3>
+            <p>Es un atributo heredado porque baja hacia la cola <code>R</code>.</p>
+            <p>Guarda el valor parcial que ya se calcul&oacute; antes de procesar el siguiente operador.</p>
+            <pre><code>E -&gt; T R
+R.h := T.val</code></pre>
+            <p class="keyline">Para <code>5 - 3</code>, al comienzo <code>R.h = 5</code>.</p>
+          </article>
+          <article class="card">
+            <h3><code>R.s</code>: resultado que vuelve</h3>
+            <p>Es un atributo sintetizado porque sube desde <code>R</code> hacia <code>E</code>.</p>
+            <p>Cuando la cola termina, contiene el resultado final de toda la expresi&oacute;n.</p>
+            <pre><code>R -&gt; epsilon
+R.s := R.h
+
+E.val := R.s</code></pre>
+            <p class="keyline">Sirve para devolverle a <code>E</code> el valor que la cola termin&oacute; de calcular.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17b3">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Paso 3</p>
+          <h2>Transformar una sola producci&oacute;n: el caso de la resta</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Producci&oacute;n original</p>
+            <pre><code>E -&gt; E1 - T
+E.val := E1.val - T.val</code></pre>
+            <p>La resta toma el valor que ya tra&iacute;a <code>E1</code> y le resta el valor del nuevo <code>T</code>.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Producci&oacute;n transformada</p>
+            <pre><code>R -&gt; - T R1
+R1.h := R.h - T.val
+R.s := R1.s</code></pre>
+            <p>El valor que antes estaba en <code>E1.val</code> ahora est&aacute; en <code>R.h</code>.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Lectura directa</h3>
+          <p>La regla <code>R1.h := R.h - T.val</code> significa: "tomo el acumulado que ven&iacute;a entrando, le resto el nuevo t&eacute;rmino y paso ese nuevo acumulado al siguiente tramo de la cola".</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17c">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Evaluaci&oacute;n de 5 - 3</p>
+          <h2>El acumulador heredado permite mantener la resta por la izquierda</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Derivaci&oacute;n sint&aacute;ctica</h3>
+            <pre><code>E
+-&gt; T R
+-&gt; 5 R
+-&gt; 5 - T R1
+-&gt; 5 - 3 R1
+-&gt; 5 - 3 epsilon</code></pre>
+            <p>La gram&aacute;tica ya no usa <code>E -&gt; E - T</code>; la resta aparece dentro de la cola <code>R</code>.</p>
+          </article>
+          <article class="card">
+            <h3>Evaluaci&oacute;n sem&aacute;ntica</h3>
+            <ol class="clean-list">
+              <li><code>T.val = 5</code></li>
+              <li><code>R.h := T.val = 5</code></li>
+              <li>El segundo <code>T</code> reconoce <code>3</code>, entonces <code>T.val = 3</code>.</li>
+              <li><code>R1.h := R.h - T.val = 5 - 3 = 2</code></li>
+              <li><code>R1 -&gt; epsilon</code>, por eso <code>R1.s := R1.h = 2</code>.</li>
+              <li><code>R.s := R1.s = 2</code> y luego <code>E.val := R.s = 2</code>.</li>
+            </ol>
+          </article>
+        </div>
+        <div class="tree-rule">
+          <h3>Resultado final</h3>
+          <pre><code>5 - 3 = 2
+E.val = 2</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17d">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Procedimiento informal</p>
+          <h2>Receta para transformar el esquema sin perder la sem&aacute;ntica</h2>
+        </div>
+        <div class="grid three">
+          <article class="mini-card">
+            <h3>1. Detectar la recursi&oacute;n</h3>
+            <p>Buscar producciones donde el no terminal aparece al inicio, por ejemplo <code>E -&gt; E - T</code>.</p>
+          </article>
+          <article class="mini-card">
+            <h3>2. Crear una cola</h3>
+            <p>Separar el caso base: <code>E -&gt; T R</code>. El primer t&eacute;rmino se calcula una vez y la cola procesa operadores.</p>
+          </article>
+          <article class="mini-card">
+            <h3>3. Llevar el acumulado</h3>
+            <p>Agregar <code>R.h</code> para transportar el valor parcial que antes estaba impl&iacute;cito en <code>E1.val</code>.</p>
+          </article>
+          <article class="mini-card">
+            <h3>4. Actualizar por operador</h3>
+            <p>Cada producci&oacute;n de <code>R</code> actualiza el heredado: suma si ve <code>+</code>, resta si ve <code>-</code>.</p>
+          </article>
+          <article class="mini-card">
+            <h3>5. Cerrar con epsilon</h3>
+            <p>Cuando no quedan operadores, <code>R -&gt; epsilon</code> copia el acumulado: <code>R.s := R.h</code>.</p>
+          </article>
+          <article class="mini-card">
+            <h3>6. Devolver a E</h3>
+            <p>El resultado sintetizado de la cola vuelve al no terminal inicial mediante <code>E.val := R.s</code>.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Regla mental</h3>
+          <p><code>R.h</code> es "lo que ya llevo calculado"; <code>R.s</code> es "lo que finalmente devuelvo". La transformaci&oacute;n consiste en hacer expl&iacute;cito ese viaje.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17e">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Forma general del libro</p>
+          <h2>Patr&oacute;n formal de eliminaci&oacute;n de recursi&oacute;n por la izquierda en un esquema</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Forma original</p>
+            <pre><code>A -&gt; A1 Y   { A.a := g(A1.a, Y.y) }
+A -&gt; X      { A.a := f(X.x) }</code></pre>
+            <p>El valor de <code>A.a</code> se calcula acumulando el resultado anterior <code>A1.a</code> con el nuevo tramo <code>Y.y</code>.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Forma transformada</p>
+            <pre><code>A -&gt; X      { R.h := f(X.x) }
+     R      { A.a := R.s }
+
+R -&gt; Y      { R1.h := g(R.h, Y.y) }
+     R1     { R.s := R1.s }
+
+R -&gt; epsilon { R.s := R.h }</code></pre>
+            <p>El acumulado se vuelve expl&iacute;cito: entra como <code>R.h</code> y vuelve como <code>R.s</code>.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>C&oacute;mo leerlo</h3>
+          <p>Lo que antes estaba impl&iacute;cito en la recursi&oacute;n izquierda de <code>A</code>, ahora viaja por el heredado <code>R.h</code>. Cada <code>Y</code> actualiza ese acumulado con <code>g</code>, y <code>epsilon</code> lo convierte en el sintetizado final <code>R.s</code>.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17f">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Algoritmo 5.2</p>
+          <h2>Construcci&oacute;n de un traductor predictivo dirigido por la sintaxis</h2>
+        </div>
+        <div class="grid two algorithm-grid">
+          <article class="card figure-card">
+            <h3>Algoritmo completo</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Algoritmo%20Traductor%20Predictivo/Captura%20de%20pantalla%202026-04-23%20095632.png" alt="Algoritmo 5.2: construcci&oacute;n de un traductor predictivo dirigido por la sintaxis">
+            </div>
+          </article>
+          <article class="card">
+            <h3>Qu&eacute; recibe y qu&eacute; produce</h3>
+            <ol class="clean-list">
+              <li><strong>Entrada:</strong> un esquema de traducci&oacute;n cuya gram&aacute;tica ya sea adecuada para an&aacute;lisis predictivo.</li>
+              <li><strong>Salida:</strong> c&oacute;digo del traductor dirigido por la sintaxis.</li>
+              <li><strong>M&eacute;todo:</strong> modificar la construcci&oacute;n de analizadores predictivos para que tambi&eacute;n eval&uacute;en atributos y ejecuten acciones.</li>
+            </ol>
+            <p class="keyline">Primero se arregla la gram&aacute;tica; despu&eacute;s se genera el traductor.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17g">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Lectura del algoritmo</p>
+          <h2>Entrada, salida y objetivo del traductor predictivo</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Fragmento del libro</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Algoritmo%20Traductor%20Predictivo/Captura%20de%20pantalla%202026-04-23%20095643.png" alt="Entrada, salida y m&eacute;todo del algoritmo 5.2">
+            </div>
+          </article>
+          <article class="card">
+            <h3>Qu&eacute; hay que entender</h3>
+            <ol class="clean-list">
+              <li>La entrada es un esquema de traducci&oacute;n cuya gram&aacute;tica ya puede analizarse de forma predictiva.</li>
+              <li>La salida es c&oacute;digo: procedimientos que reconocen la entrada y ejecutan las acciones sem&aacute;nticas.</li>
+              <li>El m&eacute;todo parte del parser predictivo normal y le agrega manejo de atributos.</li>
+            </ol>
+            <p class="keyline">No se cambia la idea del parser: se le a&ntilde;ade traducci&oacute;n mientras reconoce la cadena.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17h">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Paso 1 del algoritmo</p>
+          <h2>Convertir cada no terminal en una unidad de procesamiento</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Texto del libro</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Algoritmo%20Traductor%20Predictivo/Captura%20de%20pantalla%202026-04-23%20095650.png" alt="Paso 1 del algoritmo: crear funciones para no terminales">
+            </div>
+          </article>
+          <article class="card">
+            <h3>Idea central</h3>
+            <ol class="clean-list">
+              <li>Por cada no terminal <code>A</code>, se construye una funci&oacute;n.</li>
+              <li>Por cada atributo heredado de <code>A</code>, la funci&oacute;n recibe un par&aacute;metro formal.</li>
+              <li>Por cada atributo sintetizado de <code>A</code>, la funci&oacute;n devuelve un valor.</li>
+              <li>Para los s&iacute;mbolos que aparecen en sus producciones, la funci&oacute;n crea variables locales.</li>
+            </ol>
+            <p class="keyline">La definici&oacute;n gramatical se transforma en estructura procedural.</p>
+          </article>
+        </div>
+        <div class="grid three">
+          <article class="mini-card">
+            <h3>Entradas</h3>
+            <p>Los atributos heredados entran a la funci&oacute;n como contexto recibido desde afuera.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Trabajo interno</h3>
+            <p>Los atributos de terminales, no terminales y resultados intermedios se manejan con variables locales.</p>
+          </article>
+          <article class="mini-card">
+            <h3>Salidas</h3>
+            <p>Los atributos sintetizados salen como resultado de la funci&oacute;n.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17i">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Paso 2 del algoritmo</p>
+          <h2>Elegir la producci&oacute;n mirando el token actual</h2>
+        </div>
+        <div class="grid two">
+          <article class="card figure-card">
+            <h3>Texto del libro</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Algoritmo%20Traductor%20Predictivo/Captura%20de%20pantalla%202026-04-23%20095654.png" alt="Paso 2 del algoritmo: escoger producci&oacute;n con el s&iacute;mbolo de anticipaci&oacute;n">
+            </div>
+          </article>
+          <article class="card">
+            <h3>Qu&eacute; significa</h3>
+            <p>Si un no terminal tiene varias producciones, su funci&oacute;n no elige al azar: observa el s&iacute;mbolo en curso de la entrada.</p>
+            <p>Es la misma decisi&oacute;n de un parser predictivo: usar el token actual para seleccionar una producci&oacute;n compatible.</p>
+            <p>Si el no terminal tiene una sola producci&oacute;n, no hay decisi&oacute;n real: simplemente se aplica esa producci&oacute;n.</p>
+            <p class="keyline">La traducci&oacute;n queda sincronizada con la decisi&oacute;n sint&aacute;ctica.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Ejemplo conceptual de selecci&oacute;n</h3>
+          <p>Si <code>R</code> tiene <code>R -&gt; + T R</code>, <code>R -&gt; - T R</code> y <code>R -&gt; epsilon</code>, la funci&oacute;n mira la entrada: si ve <code>+</code> toma la primera, si ve <code>-</code> toma la segunda, y si no ve ninguna de esas toma <code>epsilon</code>.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17j">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Paso 3 del algoritmo</p>
+          <h2>Recorrer el lado derecho de la producci&oacute;n en orden</h2>
+        </div>
+        <div class="grid two algorithm-grid">
+          <article class="card figure-card">
+            <h3>Texto del libro</h3>
+            <div class="figure-frame">
+              <img class="book-figure" src="imagenes/Algoritmo%20Traductor%20Predictivo/Captura%20de%20pantalla%202026-04-23%20095659.png" alt="Paso 3 del algoritmo: procesar terminales, no terminales y acciones sem&aacute;nticas">
+            </div>
+          </article>
+          <article class="card">
+            <h3>Los tres casos</h3>
+            <ol class="clean-list">
+              <li><strong>Terminal:</strong> guardar su valor l&eacute;xico, hacer concordar el token y avanzar la entrada.</li>
+              <li><strong>No terminal:</strong> llamar a la funci&oacute;n correspondiente, pasar heredados y recibir sintetizados.</li>
+              <li><strong>Acci&oacute;n sem&aacute;ntica:</strong> copiar su c&oacute;digo en el punto exacto donde aparece.</li>
+            </ol>
+            <p class="keyline">El orden importa: una acci&oacute;n solo puede ejecutarse cuando sus datos ya fueron calculados.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17k">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Caso terminal</p>
+          <h2>Si aparece un componente l&eacute;xico, se guarda y se consume</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Lo que indica el algoritmo</h3>
+            <ol class="clean-list">
+              <li>Guardar el valor de su atributo sintetizado en la variable correspondiente.</li>
+              <li>Generar una llamada para concordar ese componente l&eacute;xico.</li>
+              <li>Avanzar la entrada hacia el siguiente token.</li>
+            </ol>
+          </article>
+          <article class="code-card">
+            <p class="label">Ejemplo conceptual</p>
+            <pre><code>si aparece num:
+  guardar num.val
+  concordar(num)
+  avanzar entrada</code></pre>
+            <p>El valor viene del lexer; el parser solo confirma que el token esperado realmente est&aacute; en la entrada.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Lectura</h3>
+          <p>Un terminal no llama a otra funci&oacute;n de gram&aacute;tica. Simplemente se reconoce, se consume y se guarda la informaci&oacute;n l&eacute;xica que pueda necesitar una acci&oacute;n posterior.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17l">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Caso no terminal</p>
+          <h2>Si aparece un no terminal, se delega en su funci&oacute;n</h2>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <p class="label">Forma abstracta del libro</p>
+            <pre><code>c := B(b1, b2, ..., bk)</code></pre>
+            <p><code>b1...bk</code> representan los atributos heredados que se pasan a <code>B</code>.</p>
+            <p><code>c</code> representa el atributo sintetizado que devuelve <code>B</code>.</p>
+          </article>
+          <article class="card">
+            <h3>Qu&eacute; significa</h3>
+            <p>La funci&oacute;n actual no procesa internamente todo lo que corresponde a <code>B</code>.</p>
+            <p>Le pasa el contexto necesario, espera su resultado y guarda ese resultado para continuar con el resto de la producci&oacute;n.</p>
+            <p class="keyline">Cada no terminal se comporta como una subrutina del traductor.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Ejemplo abstracto</h3>
+          <p>Si una producci&oacute;n tiene la forma <code>A -&gt; X B Y</code>, la funci&oacute;n de <code>A</code> procesa <code>X</code>, llama a <code>B(...)</code>, recibe el resultado de <code>B</code> y despu&eacute;s contin&uacute;a con <code>Y</code>.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17m">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Caso acci&oacute;n sem&aacute;ntica</p>
+          <h2>Si aparece una acci&oacute;n sem&aacute;ntica, se ejecuta en ese lugar</h2>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Lo que indica el algoritmo</h3>
+            <p>La acci&oacute;n sem&aacute;ntica se copia dentro del analizador, sustituyendo cada referencia a atributos por la variable local correspondiente.</p>
+            <p>No se manda todo al final: se respeta la posici&oacute;n exacta de la acci&oacute;n en la producci&oacute;n.</p>
+            <p class="keyline">El esquema de traducci&oacute;n controla el orden de evaluaci&oacute;n.</p>
+          </article>
+          <article class="code-card">
+            <p class="label">Ejemplo de orden</p>
+            <pre><code>E -&gt; T { R.h := T.val } R { E.val := R.s }</code></pre>
+            <ol class="clean-list">
+              <li>Procesar <code>T</code>.</li>
+              <li>Ejecutar <code>R.h := T.val</code>.</li>
+              <li>Procesar <code>R</code>.</li>
+              <li>Ejecutar <code>E.val := R.s</code>.</li>
+            </ol>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-17n">
+      <div class="slide-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Resumen del algoritmo</p>
+          <h2>El traductor predictivo mezcla reconocimiento sint&aacute;ctico y evaluaci&oacute;n sem&aacute;ntica</h2>
+        </div>
+        <div class="grid three">
+          <article class="mini-card">
+            <h3>1. Funciones</h3>
+            <p>Se crea una funci&oacute;n por no terminal: heredados como par&aacute;metros y sintetizados como retorno.</p>
+          </article>
+          <article class="mini-card">
+            <h3>2. Selecci&oacute;n</h3>
+            <p>Si hay varias producciones, se elige una usando el token actual de entrada.</p>
+          </article>
+          <article class="mini-card">
+            <h3>3. Recorrido</h3>
+            <p>La producci&oacute;n elegida se procesa de izquierda a derecha.</p>
+          </article>
+          <article class="mini-card">
+            <h3>4. Terminales</h3>
+            <p>Se guardan atributos l&eacute;xicos, se hace match y se avanza.</p>
+          </article>
+          <article class="mini-card">
+            <h3>5. No terminales</h3>
+            <p>Se llaman funciones, pasando heredados y recibiendo sintetizados.</p>
+          </article>
+          <article class="mini-card">
+            <h3>6. Acciones</h3>
+            <p>Se ejecutan en el lugar donde aparecen, cuando sus atributos ya existen.</p>
+          </article>
+        </div>
+        <article class="band">
+          <h3>Resultado</h3>
+          <p>El parser predictivo no solo reconoce la cadena: tambi&eacute;n produce la traducci&oacute;n respetando el orden impuesto por el esquema.</p>
+        </article>
       </div>
     </section>
 

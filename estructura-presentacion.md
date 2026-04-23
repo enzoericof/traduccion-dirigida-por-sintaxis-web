@@ -2,7 +2,7 @@
 
 Presentación de **Compiladores** sobre **Traducción Dirigida por la Sintaxis**.
 
-Total actual: **48 diapositivas**.
+Total actual: **67 diapositivas**.
 
 ## Mapa de diapositivas
 
@@ -38,24 +38,43 @@ Total actual: **48 diapositivas**.
 | 28 | `slide-15c` | Ubicación de acciones | Una acción solo puede usar atributos que ya fueron calculados |
 | 29 | `slide-15d` | De DDS a esquema | Las reglas L-atribuidas indican dónde insertar cada acción semántica |
 | 30 | `slide-16` | 5.5 | Traducción descendente |
-| 31 | `slide-17` | LL y recursión | Eliminar recursión por la izquierda para poder traducir en descenso |
-| 32 | `slide-17b` | Conservación semántica | La gramática cambia, pero el significado de la expresión debe seguir siendo el mismo |
-| 33 | `slide-18` | Traductor predictivo | En descenso recursivo, los heredados encajan de forma natural |
-| 34 | `slide-19` | 5.6 | Evaluación ascendente de atributos heredados |
-| 35 | `slide-20` | Heredados en LR | La solución clásica es usar marcadores y aprovechar la pila |
-| 36 | `slide-20b` | Interpretación de la pila | El marcador no agrega significado nuevo: solo adelanta el momento de ejecutar la acción |
-| 37 | `slide-21` | 5.7 | Evaluadores recursivos |
-| 38 | `slide-22` | Evaluadores recursivos | Las funciones recursivas evalúan atributos recorriendo un árbol ya construido |
-| 39 | `slide-22a` | Recorridos de izquierda a derecha | Una DDS por la izquierda puede implantarse con funciones recursivas similares a las predictivas |
-| 40 | `slide-22b` | Ejemplo | DDS para determinar tamaño y altura de fórmulas |
-| 41 | `slide-22c` | Lectura del ejemplo | La función simula las reglas semánticas de cada producción |
-| 42 | `slide-22d` | Otros recorridos | Con un árbol explícito, los hijos pueden visitarse en cualquier orden necesario |
-| 43 | `slide-22e` | Función para otros recorridos | El evaluador puede cambiar el orden de visita según la producción usada |
-| 44 | `slide-23` | 5.8 | Consideraciones de espacio para valores de atributos |
-| 45 | `slide-24` | Memoria | Los valores viven solo mientras alguien los necesita |
-| 46 | `slide-24b` | Ejemplo de reutilización | Un mismo registro temporal puede servir para varios atributos en distintos momentos |
-| 47 | `slide-25` | Resumen | Síntesis del capítulo |
-| 48 | `slide-26` | Bibliografía | Fuentes bibliográficas |
+| 31 | `slide-17` | LL y recursión | Por qué importa eliminar recursión por la izquierda en esquemas de traducción |
+| 32 | `slide-17a` | Esquema original y transformado | La transformación cambia la forma, no el significado |
+| 33 | `slide-17b` | Conservación semántica | Paso a paso: cómo se reconstruye la semántica del esquema |
+| 34 | `slide-17b1` | Paso 1 | Separar el primer término de la cola de operaciones |
+| 35 | `slide-17b2` | Paso 2 | Agregar `R.h` y `R.s` para no perder el valor acumulado |
+| 36 | `slide-17b3` | Paso 3 | Transformar una sola producción: el caso de la resta |
+| 37 | `slide-17c` | Evaluación de `5 - 3` | El acumulador heredado permite mantener la resta por la izquierda |
+| 38 | `slide-17d` | Procedimiento informal | Receta para transformar el esquema sin perder la semántica |
+| 39 | `slide-17e` | Forma general del libro | Patrón formal de eliminación de recursión por la izquierda en un esquema |
+| 40 | `slide-17f` | Algoritmo 5.2 | Construcción de un traductor predictivo dirigido por la sintaxis |
+| 41 | `slide-17g` | Lectura del algoritmo | Entrada, salida y objetivo del traductor predictivo |
+| 42 | `slide-17h` | Paso 1 del algoritmo | Convertir cada no terminal en una unidad de procesamiento |
+| 43 | `slide-17i` | Paso 2 del algoritmo | Elegir la producción mirando el token actual |
+| 44 | `slide-17j` | Paso 3 del algoritmo | Recorrer el lado derecho de la producción en orden |
+| 45 | `slide-17k` | Caso terminal | Si aparece un componente léxico, se guarda y se consume |
+| 46 | `slide-17l` | Caso no terminal | Si aparece un no terminal, se delega en su función |
+| 47 | `slide-17m` | Caso acción semántica | Si aparece una acción semántica, se ejecuta en ese lugar |
+| 48 | `slide-17n` | Resumen del algoritmo | El traductor predictivo mezcla reconocimiento sintáctico y evaluación semántica |
+| 49 | `slide-19` | 5.6 | Evaluación ascendente de atributos heredados |
+| 50 | `slide-20` | Heredados en LR | La solución clásica es usar marcadores y aprovechar la pila |
+| 51 | `slide-20b` | Interpretación de la pila | El marcador no agrega significado nuevo: solo adelanta el momento de ejecutar la acción |
+| 52 | `slide-21` | 5.7 | Evaluadores recursivos |
+| 53 | `slide-22` | Evaluadores recursivos | Las funciones recursivas evalúan atributos recorriendo un árbol ya construido |
+| 54 | `slide-22a` | Recorridos de izquierda a derecha | Una DDS por la izquierda puede implantarse con funciones recursivas similares a las predictivas |
+| 55 | `slide-22b` | Ejemplo | DDS para determinar tamaño y altura de fórmulas |
+| 56 | `slide-22c` | Lectura del ejemplo | La función simula las reglas semánticas de cada producción |
+| 57 | `slide-22d` | Otros recorridos | Con un árbol explícito, los hijos pueden visitarse en cualquier orden necesario |
+| 58 | `slide-22e` | Función para otros recorridos | El evaluador puede cambiar el orden de visita según la producción usada |
+| 59 | `slide-23` | 5.8 | Consideraciones de espacio para valores de atributos |
+| 60 | `slide-24` | Consideraciones de espacio | Los valores de atributos también necesitan administración de memoria |
+| 61 | `slide-24a` | Asignación de espacio | Ejemplo: declaraciones de arrays y grafo de dependencias |
+| 62 | `slide-24b` | Asignación de espacio | Las duraciones permiten devolver registros al conjunto disponible |
+| 63 | `slide-24c` | Algoritmo | El registro se marca hasta que termina la duración del valor que contiene |
+| 64 | `slide-24d` | Evitar copias | Las reglas de copia pueden tratarse como un caso especial |
+| 65 | `slide-24e` | Evitar copias | Las copias comparten registro hasta que termina toda la clase de equivalencia |
+| 66 | `slide-25` | Resumen | Síntesis del capítulo |
+| 67 | `slide-26` | Bibliografía | Fuentes bibliográficas |
 
 ## Resumen por bloques
 
@@ -66,8 +85,8 @@ Total actual: **48 diapositivas**.
 | 5.2 | 11-17 | Construcción de árboles sintácticos, diferencia Parse Tree/AST, `haznodo`, `hazhoja`, `apn` y GDA. |
 | 5.3 | 18-22 | Evaluación ascendente de atributos sintetizados con pila LR y reducciones. |
 | 5.4 | 23-29 | Definiciones con atributos por la izquierda y esquemas de traducción. |
-| 5.5 | 30-33 | Traducción descendente, recursión por la izquierda y traductor predictivo. |
-| 5.6 | 34-36 | Evaluación ascendente de atributos heredados con marcadores y pila. |
-| 5.7 | 37-43 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
-| 5.8 | 44-46 | Consideraciones de espacio, vida útil de atributos y reutilización de registros. |
-| Cierre | 47-48 | Síntesis conceptual y bibliografía. |
+| 5.5 | 30-48 | Traducción descendente, eliminación de recursión por la izquierda, `R.h`/`R.s`, forma general del libro y algoritmo 5.2 paso a paso. |
+| 5.6 | 49-51 | Evaluación ascendente de atributos heredados con marcadores y pila. |
+| 5.7 | 52-58 | Evaluadores recursivos y recorridos sobre árboles ya construidos. |
+| 5.8 | 59-65 | Consideraciones de espacio, vida útil de atributos, reutilización de registros y reglas de copia. |
+| Cierre | 66-67 | Síntesis conceptual y bibliografía. |
